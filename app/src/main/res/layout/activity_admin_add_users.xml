@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/i4"
+    tools:context="com.example.administrator.sportmanager.admin.registerActivity">
+
+
+    <!--        android:src="@drawable/backpay" />-->
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginRight="0dp"
+        android:text="添加用户"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:textSize="35sp"
+        android:layout_marginBottom="30dp"
+        android:background="#D77F041D"
+      />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:text="用户名:"
+            android:gravity="center_vertical"
+            android:textColor="@color/black"
+            android:textSize="26sp" />
+        <EditText
+            android:background="@null"
+            android:id="@+id/r_name"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="38dp"
+            android:inputType="textPersonName"
+            android:singleLine="true"
+            android:textSize="16sp"
+            android:hint="请输入用户名"
+            android:textColorHint="@color/textColorHint"
+            />
+
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/reg_diver0"
+        android:layout_width="320dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="17dp"
+        android:background="@color/input_dvier" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:text="密码:"
+            android:textColor="@color/black"
+            android:textSize="26sp" />
+
+        <EditText
+            android:id="@+id/r_password"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="55dp"
+            android:background="@null"
+            android:hint="请输入密码"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textColorHint="@color/textColorHint"
+            android:textCursorDrawable="@drawable/edit_cursor_color"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/reg_diver1"
+        android:layout_width="320dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="17dp"
+        android:background="@color/input_dvier" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:text="姓名:"
+            android:textColor="@color/black"
+            android:textSize="26sp" />
+
+        <EditText
+            android:id="@+id/user_name"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="52dp"
+            android:background="@null"
+            android:hint="请填写姓名"
+            android:singleLine="true"
+            android:textColorHint="@color/textColorHint"
+            android:textCursorDrawable="@drawable/edit_cursor_color"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/reg_diver2"
+        android:layout_width="320dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="17dp"
+        android:background="@color/input_dvier" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:text="性别:"
+            android:textColor="@color/black"
+            android:textSize="26sp" />
+
+        <EditText
+            android:id="@+id/r_sex"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="56dp"
+            android:background="@null"
+            android:hint="请填写性别"
+            android:singleLine="true"
+            android:textColorHint="@color/textColorHint"
+            android:textCursorDrawable="@drawable/edit_cursor_color"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/reg_diver3"
+        android:layout_width="320dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="17dp"
+        android:background="@color/input_dvier" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:text="生日:"
+            android:textColor="@color/black"
+            android:textSize="26sp" />
+
+        <EditText
+            android:id="@+id/r_birthday"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="56dp"
+            android:background="@null"
+            android:hint="请填写生日"
+            android:password="false"
+            android:singleLine="true"
+            android:textColorHint="@color/textColorHint"
+            android:textCursorDrawable="@drawable/edit_cursor_color"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/reg_diver4"
+        android:layout_width="320dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="17dp"
+        android:background="@color/input_dvier" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:text="手机号:"
+            android:textColor="@color/black"
+            android:textSize="26sp" />
+
+        <EditText
+            android:id="@+id/r_phone"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="40dp"
+            android:background="@null"
+            android:hint="请填写手机号"
+            android:password="false"
+            android:singleLine="true"
+            android:textColorHint="@color/textColorHint"
+            android:textCursorDrawable="@drawable/edit_cursor_color"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/reg_diver5"
+        android:layout_width="320dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="17dp"
+        android:background="@color/input_dvier" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:orientation="horizontal">
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/r_register"
+            android:layout_width="150dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_button_blue_gradient"
+            android:text="添加用户"
+            android:layout_alignBaseline="@+id/r_back"
+            android:layout_alignBottom="@+id/r_back"
+            android:layout_alignRight="@+id/r_password"
+            android:layout_alignEnd="@+id/r_password"
+            android:textSize="23sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+        <Button
+            android:layout_marginLeft="30dp"
+            android:id="@+id/add_reader_back_bt"
+            android:layout_width="150dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_button_blue_gradient"
+            android:text="返回"
+            android:layout_alignBaseline="@+id/r_back"
+            android:layout_alignBottom="@+id/r_back"
+            android:layout_alignRight="@+id/r_password"
+            android:layout_alignEnd="@+id/r_password"
+            android:textSize="23sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

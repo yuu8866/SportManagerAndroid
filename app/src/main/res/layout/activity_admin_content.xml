@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/i4"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.administrator.sportmanager.admin.houtai_admin.admin_content">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#D77F041D"
+        android:gravity="center">
+
+        <!-- TextView -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="器材云"
+            android:textSize="30sp"
+            android:textColor="@color/white"
+            android:layout_marginLeft="75dp"
+            />
+
+        <!-- 替换@drawable/your_image为你的图片资源 -->
+
+
+        />
+
+        <!-- ImageButton -->
+
+        <ImageView
+            android:id="@+id/center_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="75dp"
+            android:src="@mipmap/ic_menu"/>
+
+
+        <ImageButton
+            android:id="@+id/content_back"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@color/transparent"
+            app:srcCompat="@mipmap/left_arrow" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+
+                android:id="@+id/selcet"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:background="@color/transparent"
+                android:src="@mipmap/cxxx" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@+id/selcet"
+                android:layout_toRightOf="@+id/selcet"
+                android:gravity="center_vertical"
+                android:text="查询信息"
+                android:textSize="30sp" />
+
+            <ImageButton
+                android:id="@+id/ad_select"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="right"
+                android:background="@color/transparent"
+                android:src="@mipmap/right_arrow" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+
+            android:orientation="horizontal">
+
+            <ImageView
+
+                android:id="@+id/manager_sport"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@color/transparent"
+                android:src="@mipmap/glds" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@id/manager_sport"
+                android:layout_toRightOf="@id/manager_sport"
+                android:text="器材管理"
+                android:textSize="30sp" />
+
+            <ImageButton
+                android:id="@+id/ad_manager_sport"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="right"
+                android:background="@color/transparent"
+                android:src="@mipmap/right_arrow" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+
+            android:orientation="horizontal">
+
+            <ImageView
+
+                android:id="@+id/manager_reader"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@color/transparent"
+                android:src="@mipmap/gldz" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/manager_reader"
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@id/manager_reader"
+                android:layout_toRightOf="@id/manager_reader"
+                android:text="用户管理"
+                android:textSize="30sp"
+
+                />
+
+            <ImageButton
+                android:id="@+id/ad_manager_reader"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="right"
+                android:background="@color/transparent"
+                android:src="@mipmap/right_arrow" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/i4"
+    tools:context="com.example.administrator.sportmanager.admin.registerActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/bg_button_blue_gradient"
+        android:gravity="center"
+        android:text="修改信息"
+        android:textColor="#37302F"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/r_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="请输入用户名" />
+
+    <EditText
+        android:id="@+id/r_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="请输入密码"/>
+
+    <EditText
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="姓名"/>
+    <EditText
+        android:id="@+id/r_sex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:digits="男女"
+        android:maxLength="1"
+        android:hint="请输入性别" />
+
+    <EditText
+        android:id="@+id/r_birthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="请输入生日"/>
+    <EditText
+        android:id="@+id/r_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        android:maxLength="11"
+        android:hint="请输入手机号" />
+
+
+    <Button
+        android:id="@+id/r_register"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:text="修改"
+
+        android:layout_alignBaseline="@+id/r_back"
+        android:layout_alignBottom="@+id/r_back"
+        android:layout_alignRight="@+id/r_password"
+        android:layout_alignEnd="@+id/r_password"
+        android:background="@drawable/bg_button_blue_gradient"
+        android:textSize="15sp"/>
+</LinearLayout>

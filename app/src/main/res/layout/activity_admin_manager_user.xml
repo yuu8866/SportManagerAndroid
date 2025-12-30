@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/i4"
+    tools:context="com.example.administrator.sportmanager.admin.houtai_admin.admin_manager_user">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#D77F041D">
+
+        <TextView
+            android:layout_marginTop="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="管理用户"
+            android:textSize="30sp" />
+
+        <ImageButton
+            android:id="@+id/manreader_back"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:background="@color/transparent"
+            app:srcCompat="@mipmap/left_arrow" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/selectreader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:background="@color/transparent"
+            android:src="@mipmap/select_reader" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_alignBottom="@+id/selectreader"
+            android:layout_toEndOf="@+id/selectreader"
+            android:layout_toRightOf="@+id/selectreader"
+            android:gravity="center_vertical"
+            android:text="查找用户"
+            android:textSize="30sp" />
+
+        <ImageButton
+            android:id="@+id/ad_selctreader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right"
+            android:background="@color/transparent"
+            android:src="@mipmap/right_arrow" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/addreader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:background="@color/transparent"
+            android:src="@mipmap/add_reader" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_alignBottom="@+id/addreader"
+            android:layout_toEndOf="@+id/addreader"
+            android:layout_toRightOf="@+id/addreader"
+            android:gravity="center_vertical"
+            android:text="添加用户"
+            android:textSize="30sp" />
+
+        <ImageButton
+            android:id="@+id/ad_addreader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right"
+            android:background="@color/transparent"
+            android:src="@mipmap/right_arrow" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/editReader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@color/transparent"
+            android:src="@mipmap/edit_reader" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_alignBottom="@id/editReader"
+            android:layout_toEndOf="@id/editReader"
+            android:layout_toRightOf="@id/editReader"
+            android:text="编辑用户"
+            android:textSize="30sp" />
+
+        <ImageButton
+            android:id="@+id/ad_editReader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right"
+            android:background="@color/transparent"
+            android:src="@mipmap/right_arrow" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/deleteReader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@color/transparent"
+            android:src="@mipmap/delete_reader" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_alignBottom="@id/deleteReader"
+            android:layout_toEndOf="@id/deleteReader"
+            android:layout_toRightOf="@id/deleteReader"
+            android:text="删除用户"
+            android:textSize="30sp"
+
+            />
+
+        <ImageButton
+            android:id="@+id/ad_deleteReader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right"
+            android:background="@color/transparent"
+            android:src="@mipmap/right_arrow" />
+    </RelativeLayout>
+</LinearLayout>

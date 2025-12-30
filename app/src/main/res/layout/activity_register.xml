@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@drawable/bg"
+    >
+    <!--    android:background="@drawable/bg"-->
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ng1">
+    </ImageView>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="420dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/roundbutton2"
+        android:elevation="5dp"
+        >
+    </View>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="60dp"
+        android:elevation="7dp">
+
+        <TextView
+            android:layout_marginTop="0dp"
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="用户注册"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="30sp"
+            android:layout_marginBottom="100dp"
+            android:gravity="center"/>
+
+
+        <EditText
+            android:id="@+id/r_name"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/roundbutton3"
+            android:hint="请输入用户名"
+            android:maxLength="12"
+            android:paddingLeft="10dp"
+            android:inputType="textPersonName"
+            android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            android:paddingRight="10dp"
+            android:textColorHint="#e0e5df"
+            />
+
+        <EditText
+            android:id="@+id/r_password"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/r_name"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/roundbutton3"
+            android:hint="请输入密码"
+            android:maxLength="12"
+            android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            android:inputType="textPassword"
+            android:paddingLeft="10dp"
+            android:textColorHint="#e0e5df" />
+        <EditText
+            android:id="@+id/user_name"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/r_password"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/roundbutton3"
+            android:hint="请输入姓名"
+            android:maxLength="4"
+            android:inputType="textPersonName"
+            android:paddingLeft="10dp"
+            android:textColorHint="#e0e5df" />
+        <EditText
+            android:id="@+id/r_sex"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/user_name"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/roundbutton3"
+            android:hint="请输入性别(男/女)"
+            android:inputType="text"
+            android:digits="男女"
+            android:maxLength="1"
+            android:paddingLeft="10dp"
+            android:textColorHint="#e0e5df" />
+        <EditText
+            android:id="@+id/r_birthday"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/r_sex"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/roundbutton3"
+            android:hint="请输入生日"
+            android:inputType="date"
+            android:paddingLeft="10dp"
+            android:textColorHint="#e0e5df" />
+        <EditText
+            android:id="@+id/r_phone"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/r_birthday"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/roundbutton3"
+            android:hint="请输入手机号"
+            android:digits="1234567890"
+            android:inputType="phone"
+            android:paddingLeft="10dp"
+            android:textColorHint="#e0e5df" />
+
+        <Button
+            android:id="@+id/r_back"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="500dp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_marginLeft="190dp"
+            android:background="@drawable/bg_button_blue_gradient"
+            android:onClick="Check"
+            android:text="返回"
+
+            />
+
+        <Button
+            android:id="@+id/r_register"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="500dp"
+            android:background="@drawable/bg_button_blue_gradient"
+            android:onClick="Check"
+            android:text="注册"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+           />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

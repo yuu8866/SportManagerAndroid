@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/collect_title"
+        android:layout_width="match_parent"
+    android:layout_height="20dp"
+    android:gravity="center"
+    android:background="#D77F041D"
+    android:textStyle="bold"
+    android:textColor="@color/black"
+    android:textSize="30sp"
+    android:padding="10dp" /> <!-- 添加内边距 -->
+
+    <!-- 其他信息的LinearLayout，水平排列 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/collect_sport_info_img"
+            android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@mipmap/ic_launcher" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/collect_Sport_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="器材名"
+                android:textSize="16sp" />
+            <TextView
+                android:id="@+id/collect_sport_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="发布者"
+                android:textSize="16sp" />
+            <TextView
+                android:id="@+id/collect_Sport_Type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="器械类型"
+                android:textSize="16sp" />
+            <TextView
+                android:id="@+id/collect_sport_pice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="租用价格"
+                android:textSize="16sp" />
+            <TextView
+                android:id="@+id/collect_Sport_Rank"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="信用值"
+                android:textSize="16sp" />
+            <TextView
+                android:id="@+id/collect_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="收藏时间"
+                android:textSize="16sp" />
+
+
+            <!-- 其他TextView按需添加 -->
+        </LinearLayout>
+
+        <!-- 其他相关的TextView和ImageView按需添加 -->
+
+    </LinearLayout>
+</LinearLayout>

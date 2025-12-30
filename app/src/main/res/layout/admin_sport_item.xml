@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/admin_sport_info_img"
+        android:layout_weight="1"
+        android:layout_width="20dp"
+        android:layout_height="150dp"/>
+    <TextView
+        android:layout_width="1dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:textSize="100sp"
+        android:gravity="center_horizontal"
+        android:text="运动器械名"
+        android:id="@+id/admin_Sport_Name"/>
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:textSize="15sp"
+        android:gravity="center_horizontal"
+        android:text="作者"
+        android:id="@+id/admin_sport_author"/>
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:textSize="15sp"
+        android:gravity="center_horizontal"
+        android:text="类型"
+        android:id="@+id/admin_Sport_Type"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:textSize="15sp"
+        android:gravity="center_horizontal"
+        android:text="价格"
+        android:id="@+id/admin_sport_pice"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:textSize="15sp"
+        android:gravity="center_horizontal"
+        android:text="评分"
+        android:id="@+id/admin_Sport_Rank"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:singleLine="false"
+        android:textSize="15sp"
+        android:gravity="center_horizontal"
+        android:text="出版社"
+        android:id="@+id/admin_sport_publish"/>
+
+</LinearLayout>
