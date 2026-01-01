@@ -9,3 +9,8 @@ local.properties
 *.log
 .DS_Store
 Thumbs.db
+# build outputs
+app/release/
+app/debug/
+*.apk
+*.aab

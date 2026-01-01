@@ -22,7 +22,7 @@ import com.example.administrator.sportmanager.admin.databaseHelp;
 import static com.example.administrator.sportmanager.admin.utils.BitmapTool.byteToBitmap;
 
 public class PayActivity extends AppCompatActivity {
-    private TextView pay_sportid, pay_sportname, pay_sportuser, pay_sportprice, pay_sporttype, pay_sportowner, pay_sportrank, pay_sportcomment, borrow_time;
+    private TextView pay_sportid, pay_sportname, pay_sportuser, pay_sportprice, pay_sporttype, pay_sportowner, pay_sportrank, pay_sportcomment, borrow_time, pay_days; // 添加 pay_days 变量声明
     private ImageView pay_sportimg;
     private Button paysport_bt,pay_back_bt;
     private databaseHelp help;
@@ -47,11 +47,14 @@ public class PayActivity extends AppCompatActivity {
         pay_sportrank = findViewById(R.id.pay_sportrank);
         pay_sportcomment = findViewById(R.id.pay_sportcomment);
         borrow_time = findViewById(R.id.pay_time);
+        pay_days = findViewById(R.id.pay_days); // 初始化 pay_days 变量
 
         Bundle bundle = this.getIntent().getExtras();
         pay_sportid.setText(bundle.getInt("sportid")+"");
         pay_sportname.setText(bundle.getString("sportname"));
         pay_sportuser.setText(bundle.getString("sportauthor"));
+        pay_days.setText(bundle.getString("days"));
+
         borrow_time.setText(bundle.getString("sporttime"));
         borrowid=bundle.getInt("borrowid");
 
@@ -67,6 +70,7 @@ public class PayActivity extends AppCompatActivity {
             pay_sportrank.setText(cursor.getString(cursor.getColumnIndex("rank")));
             pay_sportcomment.setText(cursor.getString(cursor.getColumnIndex("comment")));
         }
+        Log.e("DAYS_DEBUG", "bundle days = " + bundle.getString("days"));
 
         //还书按钮的事件监听
         paysport_bt = findViewById(R.id.pay_bt);

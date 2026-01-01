@@ -40,11 +40,10 @@ public class person_borrow extends AppCompatActivity {
         data = help.queryborrow(username);
         SimpleAdapter adapter = new SimpleAdapter(
                 person_borrow.this, data, R.layout.borrow_item,
-                new String[]{"Borname", "sportid", "sportname",
-                        "sportauthor", "bortime"},
-                new int[]{R.id.Borname, R.id.Bsportid,
-                        R.id.Bsportname, R.id.Bsportauthor,
-                        R.id.Bnowtimae});
+                new String[]{"Borname", "sportid", "sportname", "sportauthor", "days", "bortime"},
+                new int[]{R.id.Borname, R.id.Bsportid, R.id.Bsportname, R.id.Bsportauthor, R.id.Bdays, R.id.Bnowtimae
+                }
+        );
         listView.setAdapter(adapter);
         //通过id查询运动器械表里的所有信息，用bundle进行数据交互
 
@@ -52,40 +51,34 @@ public class person_borrow extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent intent = new Intent(person_borrow.this, com.example.administrator.sportmanager.admin.qiantai_admin.PayActivity.class);
+
                 map = solveData(position);
-                borrowid = (int)map.get("_Bid");
-                sportid = (int)map.get("sportid");
-                sportname = map.get("sportname").toString();
-                sportauthor = map.get("sportauthor").toString();
-                sport_bor_time = map.get("bortime").toString();
+
+                // ✅ 不要强转 (int)，统一转 String 再 parse，避免 ClassCastException
+                int borrowid = Integer.parseInt(String.valueOf(map.get("_Bid")));
+                int sportid  = Integer.parseInt(String.valueOf(map.get("sportid")));
+
+                String sportname = String.valueOf(map.get("sportname"));
+                String sportauthor = String.valueOf(map.get("sportauthor"));
+                String sport_bor_time = String.valueOf(map.get("bortime"));
+
+                // days 可能为空，给默认值
+                String days = map.get("days") == null ? "1天" : String.valueOf(map.get("days"));
+
+                Intent intent = new Intent(person_borrow.this, com.example.administrator.sportmanager.admin.qiantai_admin.PayActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putInt("sportid",sportid);
-                bundle.putInt("borrowid",borrowid);
-                bundle.putString("sportname",sportname);
-                bundle.putString("sportauthor",sportauthor);
-                bundle.putString("sporttime",sport_bor_time);
+                bundle.putInt("sportid", sportid);
+                bundle.putInt("borrowid", borrowid);
+                bundle.putString("sportname", sportname);
+                bundle.putString("sportauthor", sportauthor);
+                bundle.putString("sporttime", sport_bor_time);
+                bundle.putString("days", days);     // ✅ 传天数（可选但推荐）
                 intent.putExtras(bundle);
+
                 startActivity(intent);
-/*                View curr = adapterView.getChildAt((int)l);
-                TextView sportname = curr.findViewById(R.id.Bsportname);
-                TextView sportid = curr.findViewById(R.id.Bsportid);
-                TextView author = curr.findViewById(R.id.Bsportauthor);
-                TextView time = curr.findViewById(R.id.Bnowtimae);
-                help.delborrowbyname(sportname.getText().toString());
-                Toast.makeText(person_borrow.this, "还书成功", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(person_borrow.this, person_borrow.class);
-//                startActivity(intent);
-                ContentValues values=new ContentValues();
-                values.put("sportid",sportid.getText().toString());
-                values.put("sportname",sportname.getText().toString());
-                values.put("sportauthor",author.getText().toString());
-                values.put("Borname",username);
-                values.put("nowtime",time.getText().toString());
-                help.insertpay(values);
-                finish();*/
             }
         });
+
         back = findViewById(R.id.btn_person_borrow_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
