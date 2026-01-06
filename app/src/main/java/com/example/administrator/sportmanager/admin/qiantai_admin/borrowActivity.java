@@ -143,6 +143,9 @@ public class borrowActivity extends AppCompatActivity {
 
                 help.insertocollect(values);
                 Toast.makeText(borrowActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(borrowActivity.this, collectActivity.class);
+                startActivity(intent);
+
             }
         });
 
@@ -215,10 +218,37 @@ public class borrowActivity extends AppCompatActivity {
         values.put("Borname", username);
         values.put("nowtime", str);
 
-        values.put("days", days); // ✅ 关键：写入租赁天数
+        // ✅ 1) 计算总价：日租价(rank) × 天数
+        String rankStr = borrow_sportrank.getText().toString(); // rank 里是 4.9 这种
+        rankStr = rankStr.replaceAll("[^0-9.]", "");            // 防止带“元/天”等字
+        double dayPriceYuan = 0.0;
+        try { dayPriceYuan = Double.parseDouble(rankStr); } catch (Exception ignore) {}
 
-        help.insertorrowo(values);
+        int dayFen = (int) Math.round(dayPriceYuan * 100);  // 4.9 -> 490
+        int totalFen = dayFen * days;                       // 490*2 -> 980
 
-        Toast.makeText(borrowActivity.this, "租赁成功（" + days + "天）", Toast.LENGTH_SHORT).show();
+        values.put("days", days);
+        values.put("total_price", totalFen);  // ✅ 用“分”存
+        values.put("pay_status", 0);          // ✅ 待支付
+        values.put("pay_time", "");           // ✅ 先为空
+
+// ✅ 2) 插入订单并拿到 _Bid
+        long borrowIdLong = help.insertBorrowReturnId(values);
+        int borrowId = (int) borrowIdLong;
+
+
+// ✅ 3) 跳转到支付页
+        Intent intent = new Intent(borrowActivity.this, PayActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("sportid", intbid);
+        bundle.putInt("borrowid", borrowId);
+        bundle.putString("sportname", strbname);
+        bundle.putString("sportauthor", strbauthor);
+        bundle.putString("sporttime", str);
+        bundle.putInt("days", days);
+        intent.putExtras(bundle);
+
+        startActivity(intent);
+        Toast.makeText(borrowActivity.this, "已生成订单，请完成支付", Toast.LENGTH_SHORT).show();
     }
 }

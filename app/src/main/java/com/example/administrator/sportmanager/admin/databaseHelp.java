@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class databaseHelp extends SQLiteOpenHelper {
     private static final String DB_NAME = "CMP.db";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     public databaseHelp(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -48,7 +48,7 @@ public class databaseHelp extends SQLiteOpenHelper {
             + id + " integer primary key autoincrement," + Sport_id + "," + Sport_Name + "," + Sport_Type + " text,"
             + Sport_user + "," + Sport_owner + "," + Sport_Price + "," + Sport_Rank + "," + Sport_Comment + "," + Sport_Img + " BLOB DEFAULT NULL)";
 
-    // ✅ borrow 表增加 days 字段（默认1）
+    //
     private static final String Creat_table3 =
             "create table borrow(_Bid integer primary key autoincrement," +
                     "Borname text," +
@@ -56,7 +56,10 @@ public class databaseHelp extends SQLiteOpenHelper {
                     "sportname text," +
                     "sportauthor text," +
                     "nowtime text," +
-                    "days integer default 1)";
+                    "days integer default 1," +
+                    "total_price integer default 0," +
+                    "pay_status integer default 0," +
+                    "pay_time text)";
 
     // collect 表没有 days 字段（收藏不存天数）
     private static final String Creat_table5 =
@@ -74,21 +77,22 @@ public class databaseHelp extends SQLiteOpenHelper {
         db.execSQL(Creat_table3);
         db.execSQL(Creat_table5);
 
+
         // 初始化器材
         db.execSQL("insert into sports (sportid,name,type,user,owner,price,rank,comment) values " +
-                "(0,'羽毛球拍','球类','孟岩','器材云',20,4.9,'借用者需保持拍面整洁，避免碰撞硬物，按时归还')," +
-                "(1,'乒乓球拍','球类','小花','器材云',21,5.0,'借用者需小心使用，避免刮花拍面，不可私自更改拍面胶皮。')," +
-                "(2,'网球拍','球类','小曼 ','器材云',22,4.2,'借用者需注意避免碰撞拍面，使用后将球拍放回原处。')," +
-                "(3,'滚轮','轮式','烽月','器材云',23,4.3,'借用者需注意安全，避免在危险路段滑行，及时归还设备。')," +
-                "(4,'橄榄球','轮式','家悦','器材云',24,4.4,'借用者需注意不要将球弄脏或损坏，按时归还。')," +
-                "(5,'拉力绳','塑形','侯若飞','器材云',25,5.0,'借用者需正确使用，避免拉力过大导致断裂，保持整洁并妥善存放。')," +
-                "(6,'跑步机','健身','越才','第三方平台',26,5.0,'使用完毕后，请及时清洁跑步机表面，保持卫生。')," +
-                "(7,'动感单车','健身','小斯','器材云',27,4.7,'使用完毕后，请将动感单车放置在干燥通风的地方，避免生锈。')," +
-                "(8,'无绳跳绳','绳类','威廉','第三方平台',28,4.8,'使用完毕后，请将跳绳卷好收纳，避免绳索缠绕。')," +
-                "(9,'篮球','球类','李恩','第三方平台',29,4.9,'请在篮球充气适当时使用，避免充气不足或过足影响球的性能。')," +
+                "(0,'羽毛球拍','球类','孟岩','器材云',200,8.9,'借用者需保持拍面整洁，避免碰撞硬物，按时归还')," +
+                "(1,'乒乓球拍','球类','小花','器材云',150,5.0,'借用者需小心使用，避免刮花拍面，不可私自更改拍面胶皮。')," +
+                "(2,'网球拍','球类','小曼 ','器材云',220,4.2,'借用者需注意避免碰撞拍面，使用后将球拍放回原处。')," +
+                "(3,'滚轮','轮式','烽月','器材云',50,4.3,'借用者需注意安全，避免在危险路段滑行，及时归还设备。')," +
+                "(4,'橄榄球','轮式','家悦','器材云',55,4.4,'借用者需注意不要将球弄脏或损坏，按时归还。')," +
+                "(5,'拉力绳','塑形','侯若飞','器材云',30,5.0,'借用者需正确使用，避免拉力过大导致断裂，保持整洁并妥善存放。')," +
+                "(6,'跑步机','健身','越才','第三方平台',1500,10.0,'使用完毕后，请及时清洁跑步机表面，保持卫生。')," +
+                "(7,'动感单车','健身','小斯','器材云',2000,11.0,'使用完毕后，请将动感单车放置在干燥通风的地方，避免生锈。')," +
+                "(8,'无绳跳绳','绳类','威廉','第三方平台',45,4.8,'使用完毕后，请将跳绳卷好收纳，避免绳索缠绕。')," +
+                "(9,'篮球','球类','李恩','第三方平台',300,6.9,'请在篮球充气适当时使用，避免充气不足或过足影响球的性能。')," +
                 "(10,'足球','球类','莫员','器材云',210,5.0,'使用完毕后，请将足球放回指定位置，避免丢失。')," +
-                "(11,'瑜伽垫','塑形','华华','第三方平台',211,4.5,'避免在瑜伽垫上使用尖锐物品，以免损坏垫面。')," +
-                "(12,'排球','球类','小吾','器材云',212,4.0,'请在排球充气适当时使用，避免充气不足或过足影响球的性能。')");
+                "(11,'瑜伽垫','塑形','华华','第三方平台',210,4.5,'避免在瑜伽垫上使用尖锐物品，以免损坏垫面。')," +
+                "(12,'排球','球类','小吾','器材云',60,4.0,'请在排球充气适当时使用，避免充气不足或过足影响球的性能。')");
 
         // 初始化用户
         db.execSQL("insert into admin (user,name,password,sex,phone,birthday) values " +
@@ -191,16 +195,10 @@ public class databaseHelp extends SQLiteOpenHelper {
     }
 
     // ✅ 兼容 admin_add_sport.java 里旧的调用：helper.insersporttdata(...)
-    public void insersporttdata(String sportid,
-                                String name,
-                                String type,
-                                String user,
-                                String owner,
-                                String price,
-                                String rank,
-                                String comment,
-                                byte[] img) {
-
+    public void insersporttdata(String sportid, String name, String type, String user,
+                                String owner, String price, String rank, String comment, byte[] img)
+    {
+        db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("sportid", sportid);
         values.put("name", name);
@@ -210,9 +208,8 @@ public class databaseHelp extends SQLiteOpenHelper {
         values.put("price", price);
         values.put("rank", rank);
         values.put("comment", comment);
-        values.put("img", img);
-
-        insertsports(values);
+        db.insert(Table_Name2, null, values);
+        db.close();
     }
 
 
@@ -240,6 +237,23 @@ public class databaseHelp extends SQLiteOpenHelper {
         return db.query(Table_Name2, null, "name like ?", new String[]{"%" + name + "%"}, null, null, null, null);
     }
 
+    // 多字段模糊搜索：name/type/user/owner/price/rank(租金)
+    public Cursor searchSports(String keyword) {
+        db = getReadableDatabase();
+
+        String like = "%" + keyword + "%";
+        String sql = "SELECT * FROM " + Table_Name2
+                + " WHERE name LIKE ?"
+                + " OR type LIKE ?"
+                + " OR user LIKE ?"
+                + " OR owner LIKE ?"
+                + " OR CAST(price AS TEXT) LIKE ?"
+                + " OR CAST(rank AS TEXT) LIKE ?";
+
+        return db.rawQuery(sql, new String[]{like, like, like, like, like, like});
+    }
+
+
     // 删除器材
     public void delsports(int id) {
         db = getReadableDatabase();
@@ -251,6 +265,37 @@ public class databaseHelp extends SQLiteOpenHelper {
     public void insertorrowo(ContentValues values) {
         db = getReadableDatabase();
         db.insert(Table_Name3, null, values);
+        db.close();
+    }
+
+    //  插入 borrow 并返回订单ID（_Bid）
+    public long insertBorrowReturnId(ContentValues values) {
+        db = getWritableDatabase();
+        long id = db.insert("borrow", null, values);
+        db.close();
+        return id;
+    }
+
+    //  按订单主键 _Bid 查询订单
+    public Cursor queryBorrowById(int borrowId) {
+        db = getReadableDatabase();
+        return db.query("borrow", null, "_Bid=?", new String[]{String.valueOf(borrowId)}, null, null, null);
+    }
+
+    //  将订单标记为已支付
+    public void setBorrowPaid(int borrowId, String payTime) {
+        db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("pay_status", 1);
+        cv.put("pay_time", payTime);
+        db.update("borrow", cv, "_Bid=?", new String[]{String.valueOf(borrowId)});
+        db.close();
+    }
+
+
+    public void delBorrowById(int borrowId) {
+        db = getWritableDatabase();
+        db.delete("borrow", "_Bid=?", new String[]{String.valueOf(borrowId)});
         db.close();
     }
 
@@ -291,6 +336,25 @@ public class databaseHelp extends SQLiteOpenHelper {
                     map.put("days", "1天");
                 }
 
+                int totalIndex = cursor.getColumnIndex("total_price");
+                if (totalIndex != -1) {
+                    map.put("total_price", cursor.getInt(totalIndex) + "元");
+                } else {
+                    map.put("total_price", "0元");
+                }
+
+                int statusIndex = cursor.getColumnIndex("pay_status");
+                int status = (statusIndex != -1) ? cursor.getInt(statusIndex) : 0;
+                map.put("pay_status", status == 1 ? "已支付" : "未支付");
+
+                int payTimeIndex = cursor.getColumnIndex("pay_time");
+                if (payTimeIndex != -1) {
+                    String pt = cursor.getString(payTimeIndex);
+                    map.put("pay_time", pt == null ? "" : pt);
+                } else {
+                    map.put("pay_time", "");
+                }
+
                 data.add(map);
             }
         } finally {
@@ -298,6 +362,25 @@ public class databaseHelp extends SQLiteOpenHelper {
         }
         return data;
     }
+
+    // ✅ 取消支付：按订单主键 _Bid 删除一条 borrow 记录
+    public void delBorrowByBid(int borrowId) {
+        db = getWritableDatabase();
+        db.delete(Table_Name3, "_Bid=?", new String[]{String.valueOf(borrowId)});
+        db.close();
+    }
+
+    // ✅ 确认支付：把 pay_status 改为 1，并写入 pay_time
+    public int markBorrowPaid(int borrowId, String payTime) {
+        db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("pay_status", 1);
+        cv.put("pay_time", payTime);
+        int rows = db.update(Table_Name3, cv, "_Bid=?", new String[]{String.valueOf(borrowId)});
+        db.close();
+        return rows;
+    }
+
 
     // 在 collect 表中按用户查询
     public Cursor queryuser(String str) {
@@ -345,12 +428,19 @@ public class databaseHelp extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // v2：增加 days
         if (oldVersion < 2) {
             try {
                 db.execSQL("ALTER TABLE borrow ADD COLUMN days integer DEFAULT 1");
             } catch (Exception e) {
                 Log.e("DB_UPGRADE", "days column may already exist: " + e.getMessage());
             }
+        }
+        // v3：增加支付相关字段
+        if (oldVersion < 3) {
+            try { db.execSQL("ALTER TABLE borrow ADD COLUMN total_price integer DEFAULT 0"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE borrow ADD COLUMN pay_status integer DEFAULT 0"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE borrow ADD COLUMN pay_time text"); } catch (Exception ignored) {}
         }
     }
 

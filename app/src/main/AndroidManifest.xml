@@ -59,6 +59,8 @@
         <activity android:name=".admin.houtai_admin.admin_borrow_info" />
         <activity android:name=".admin.qiantai_admin.PayActivity" />
         <activity android:name=".admin.qiantai_admin.user_search_sports" />
+        <activity android:name=".admin.qiantai_admin.SearchActivity" />
+
     </application>
 
 </manifest>

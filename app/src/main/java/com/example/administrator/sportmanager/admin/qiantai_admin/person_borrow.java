@@ -54,7 +54,7 @@ public class person_borrow extends AppCompatActivity {
 
                 map = solveData(position);
 
-                // ✅ 不要强转 (int)，统一转 String 再 parse，避免 ClassCastException
+                //  不要强转 (int)，统一转 String 再 parse，避免 ClassCastException
                 int borrowid = Integer.parseInt(String.valueOf(map.get("_Bid")));
                 int sportid  = Integer.parseInt(String.valueOf(map.get("sportid")));
 
@@ -63,7 +63,12 @@ public class person_borrow extends AppCompatActivity {
                 String sport_bor_time = String.valueOf(map.get("bortime"));
 
                 // days 可能为空，给默认值
-                String days = map.get("days") == null ? "1天" : String.valueOf(map.get("days"));
+                String daysDisplay = map.get("days") == null ? "1天" : String.valueOf(map.get("days"));
+                String daysStr = map.get("days") == null ? "1" : String.valueOf(map.get("days"));
+                daysStr = daysStr.replaceAll("\\D+", ""); // "2天" -> "2"
+                int daysInt = 1;
+                try { daysInt = Integer.parseInt(daysStr); } catch (Exception ignore) {}
+
 
                 Intent intent = new Intent(person_borrow.this, com.example.administrator.sportmanager.admin.qiantai_admin.PayActivity.class);
                 Bundle bundle = new Bundle();
@@ -72,7 +77,7 @@ public class person_borrow extends AppCompatActivity {
                 bundle.putString("sportname", sportname);
                 bundle.putString("sportauthor", sportauthor);
                 bundle.putString("sporttime", sport_bor_time);
-                bundle.putString("days", days);     // ✅ 传天数（可选但推荐）
+                bundle.putInt("days", daysInt);
                 intent.putExtras(bundle);
 
                 startActivity(intent);

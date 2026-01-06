@@ -144,7 +144,7 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:digits="1234567890"
-            android:hint="请输入租赁价格"
+            android:hint="请输入器材价格"
             android:textColorHint="@color/textColorHint"
             />
     </LinearLayout>
@@ -156,11 +156,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="评   分 ："
+            android:text="租   金："
             android:textSize="18sp"/>
         <EditText
             android:digits="1234567890."
-            android:hint="请输入器材评分评分"
+            android:hint="请输入器材日租金"
             android:textColorHint="@color/textColorHint"
             android:id="@+id/et_sportrank"
             android:layout_width="0dp"

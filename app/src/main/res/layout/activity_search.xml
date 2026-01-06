@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- 顶部栏 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#8B0E1A">
+
+        <ImageButton
+            android:id="@+id/search_back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:background="@android:color/transparent"
+            android:src="@mipmap/left_arrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="搜索器材"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <!-- 搜索输入区 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <EditText
+            android:id="@+id/search_input"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:hint="输入 器材名/类型/发布者/平台/原价/租金"
+            android:imeOptions="actionSearch"
+            android:singleLine="true" />
+
+        <!--  搜索按钮 -->
+        <Button
+            android:id="@+id/search_btn"
+            android:layout_width="60dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="8dp"
+            android:text="搜索"
+            android:textColor="@android:color/white"
+            android:background="@android:color/holo_orange_dark"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- 结果列表（用你首页同款卡片） -->
+    <ListView
+        android:id="@+id/search_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

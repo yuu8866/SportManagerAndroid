@@ -141,7 +141,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="评    分 ："
+            android:text="租    金 ："
             android:textSize="18sp"/>
         <EditText
             android:text="4.8"

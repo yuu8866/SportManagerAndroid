@@ -144,7 +144,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="租    金："
+            android:text="原   价："
             android:textSize="18sp"
             android:textStyle="bold" />
         <TextView
@@ -163,7 +163,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="信用值："
+            android:text="租   金："
             android:textSize="18sp"
             android:textStyle="bold" />
         <TextView

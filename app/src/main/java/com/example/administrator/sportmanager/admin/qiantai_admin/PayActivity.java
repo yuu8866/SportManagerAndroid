@@ -53,8 +53,8 @@ public class PayActivity extends AppCompatActivity {
         pay_sportid.setText(bundle.getInt("sportid")+"");
         pay_sportname.setText(bundle.getString("sportname"));
         pay_sportuser.setText(bundle.getString("sportauthor"));
-        pay_days.setText(bundle.getString("days"));
-
+        int days = bundle.getInt("days", 1);
+        pay_days.setText(days + "天");
         borrow_time.setText(bundle.getString("sporttime"));
         borrowid=bundle.getInt("borrowid");
 
@@ -70,26 +70,101 @@ public class PayActivity extends AppCompatActivity {
             pay_sportrank.setText(cursor.getString(cursor.getColumnIndex("rank")));
             pay_sportcomment.setText(cursor.getString(cursor.getColumnIndex("comment")));
         }
-        Log.e("DAYS_DEBUG", "bundle days = " + bundle.getString("days"));
+        Log.e("DAYS_DEBUG", "bundle days = " + days);
 
-        //还书按钮的事件监听
+        // ✅ 从 borrow 读取：总价(分)、支付状态、支付时间
+        int totalFen = 0;
+        int payStatus = 0;
+        String payTime = "";
+
+        Cursor bcInfo = help.queryBorrowById(borrowid);
+        if (bcInfo != null) {
+            try {
+                if (bcInfo.moveToFirst()) {
+                    int idxTotal = bcInfo.getColumnIndex("total_price");
+                    if (idxTotal != -1) totalFen = bcInfo.getInt(idxTotal);
+
+                    int idxStatus = bcInfo.getColumnIndex("pay_status");
+                    if (idxStatus != -1) payStatus = bcInfo.getInt(idxStatus);
+
+                    int idxPayTime = bcInfo.getColumnIndex("pay_time");
+                    if (idxPayTime != -1) {
+                        String t = bcInfo.getString(idxPayTime);
+                        payTime = (t == null) ? "" : t;
+                    }
+                }
+            } finally {
+                bcInfo.close();
+            }
+        }
+
+// ✅ 显示“应付总价”（分 -> 元，保留2位）
+        pay_sportprice.setText(String.format("%.2f 元", totalFen / 100.0));
+
+// ✅ 显示租赁时间 + 支付时间（不改布局，只改内容）
+        String rentTime = bundle.getString("sporttime", "");
+        borrow_time.setText("租赁：" + rentTime + "\n支付：" + (payStatus == 1 ? payTime : "未支付"));
+
+
+        //订单按钮的事件监听
         paysport_bt = findViewById(R.id.pay_bt);
+
+// ✅ 先查订单状态（pay_status）
+
+
+// ✅ 根据状态改按钮文字
+        if (payStatus == 0) {
+            paysport_bt.setText("确认支付");
+        } else {
+            paysport_bt.setText("归还器材");
+        }
+
         paysport_bt.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(PayActivity.this, "还器材成功", Toast.LENGTH_SHORT).show();
-                /*
-                删除相应的借书信息
-                */
-                help.delborrow(sportid);
+                // 再查一次，防止状态变化（保险）
+                int curStatus = 0;
+                Cursor c2 = help.queryBorrowById(borrowid);
+                if (c2 != null) {
+                    try {
+                        if (c2.moveToFirst()) {
+                            int stIdx = c2.getColumnIndex("pay_status");
+                            if (stIdx != -1) curStatus = c2.getInt(stIdx);
+                        }
+                    } finally {
+                        c2.close();
+                    }
+                }
 
-                Intent intent = new Intent(PayActivity.this, person_borrow.class);
-                startActivity(intent);
-                ActivityCollector.finishAll();
+                if (curStatus == 0) {
+                    // ✅ 还没支付 → 执行支付
+                    @SuppressLint("SimpleDateFormat")
+                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String now = sdf.format(new java.util.Date());
+
+                    help.setBorrowPaid(borrowid, now);
+                    borrow_time.setText("租赁：" + rentTime + "\n支付：" + now);
+                    paysport_bt.setText("归还器材");
+
+                    Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+
+                    // 支付后按钮变成“归还器材”
+                    paysport_bt.setText("归还器材");
+                } else {
+                    // ✅ 已支付 → 执行归还（保留你原来的归还逻辑）
+                    // 你原来是 help.delborrow(sportid); 这里建议更稳一点：按 borrowid 删除
+                    help.delBorrowById(borrowid); // 需要你在 databaseHelp 里新增这个方法（下面给）
+                    Toast.makeText(PayActivity.this, "归还成功", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(PayActivity.this, person_borrow.class);
+                    startActivity(intent);
+                    ActivityCollector.finishAll();
+                }
             }
         });
+
         pay_back_bt = findViewById(R.id.pay_back_bt);
         pay_back_bt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +173,34 @@ public class PayActivity extends AppCompatActivity {
                 startActivity(intent);
                 ActivityCollector.finishAll();
             }
+
         });
+        paysport_bt.setOnLongClickListener(v -> {
+            // 只允许取消“未支付”订单
+            int curStatus = 0;
+            Cursor c = help.queryBorrowById(borrowid);
+            if (c != null) {
+                try {
+                    if (c.moveToFirst()) {
+                        int stIdx = c.getColumnIndex("pay_status");
+                        if (stIdx != -1) curStatus = c.getInt(stIdx);
+                    }
+                } finally {
+                    c.close();
+                }
+            }
+
+            if (curStatus == 0) {
+                help.delBorrowById(borrowid);
+                Toast.makeText(PayActivity.this, "已取消订单（未支付）", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(PayActivity.this, person_borrow.class));
+                ActivityCollector.finishAll();
+                return true;
+            } else {
+                Toast.makeText(PayActivity.this, "已支付订单请归还器材", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
     }
 }

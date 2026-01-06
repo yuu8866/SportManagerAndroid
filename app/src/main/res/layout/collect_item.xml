@@ -8,27 +8,29 @@
     <TextView
         android:id="@+id/collect_title"
         android:layout_width="match_parent"
-    android:layout_height="20dp"
-    android:gravity="center"
-    android:background="#D77F041D"
-    android:textStyle="bold"
-    android:textColor="@color/black"
-    android:textSize="30sp"
-    android:padding="10dp" /> <!-- 添加内边距 -->
+        android:layout_height="20dp"
+        android:gravity="center"
+        android:background="#D77F041D"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:padding="10dp" />
 
-    <!-- 其他信息的LinearLayout，水平排列 -->
+    <!-- 内容区：图片 + 信息 + 右侧按钮 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:padding="6dp">
 
         <ImageView
             android:id="@+id/collect_sport_info_img"
             android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@mipmap/ic_launcher" />
+            android:layout_height="100dp"
+            android:src="@mipmap/ic_launcher" />
 
+        <!-- 信息区 -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -42,42 +44,52 @@
                 android:layout_height="wrap_content"
                 android:text="器材名"
                 android:textSize="16sp" />
+
             <TextView
                 android:id="@+id/collect_sport_author"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="发布者"
                 android:textSize="16sp" />
+
             <TextView
                 android:id="@+id/collect_Sport_Type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="器械类型"
                 android:textSize="16sp" />
+
             <TextView
                 android:id="@+id/collect_sport_pice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="租用价格"
+                android:text="价格"
                 android:textSize="16sp" />
+
             <TextView
                 android:id="@+id/collect_Sport_Rank"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="信用值"
+                android:text="租金"
                 android:textSize="16sp" />
+
             <TextView
                 android:id="@+id/collect_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="收藏时间"
                 android:textSize="16sp" />
-
-
-            <!-- 其他TextView按需添加 -->
         </LinearLayout>
 
-        <!-- 其他相关的TextView和ImageView按需添加 -->
+        <!-- ✅ 右侧取消收藏按钮 -->
+        <Button
+            android:id="@+id/btn_cancel_collect"
+            android:layout_width="90dp"
+            android:layout_height="36dp"
+            android:text="取消收藏"
+            android:textSize="12sp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp" />
 
     </LinearLayout>
 </LinearLayout>

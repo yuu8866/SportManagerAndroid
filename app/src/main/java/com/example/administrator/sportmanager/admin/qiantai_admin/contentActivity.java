@@ -29,6 +29,7 @@ import com.example.administrator.sportmanager.R;
 import com.example.administrator.sportmanager.admin.ActivityCollector;
 import com.example.administrator.sportmanager.admin.MainActivity;
 import com.example.administrator.sportmanager.admin.databaseHelp;
+import com.example.administrator.sportmanager.admin.qiantai_admin.SearchActivity;
 
 import static com.example.administrator.sportmanager.admin.utils.BitmapTool.bitmapToByte;
 import static com.example.administrator.sportmanager.admin.utils.BitmapTool.byteToBitmap;
@@ -194,8 +195,10 @@ public class contentActivity extends AppCompatActivity implements View.OnClickLi
                 drawerLayout.openDrawer(GravityCompat.START);
                 break;
             case R.id.search:
-                Toast.makeText(contentActivity.this, "search", Toast.LENGTH_LONG).show();
+                Intent s = new Intent(contentActivity.this, SearchActivity.class);
+                startActivity(s);
                 break;
+
             default:
         }
         return true;
