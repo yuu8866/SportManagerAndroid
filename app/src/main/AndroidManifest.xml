@@ -75,6 +75,10 @@
 
         <activity android:name=".admin.qiantai_admin.UserProfileAdvancedActivity"/>
 
+        <activity
+            android:name=".admin.qiantai_admin.PostDetailActivity"
+            android:exported="true" />
+
     </application>
 
 </manifest>

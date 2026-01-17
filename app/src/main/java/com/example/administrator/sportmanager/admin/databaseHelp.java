@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class databaseHelp extends SQLiteOpenHelper {
     private static final String DB_NAME = "CMP.db";
-    private static final int DB_VERSION = 6;
+    private static final int DB_VERSION = 7;
 
     public databaseHelp(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -82,6 +82,14 @@ public class databaseHelp extends SQLiteOpenHelper {
                     "balance_after real," +
                     "create_time text)";
 
+    // v7：社区帖子表（community_post）
+    private static final String CREATE_COMMUNITY_POST =
+            "create table community_post(" +
+                    "_id integer primary key autoincrement," +
+                    "title text," +
+                    "content text," +
+                    "username text," +
+                    "create_time text)";
 
 
     public static final String Creat_table1 = "create table sports1 ("
@@ -123,6 +131,7 @@ public class databaseHelp extends SQLiteOpenHelper {
         db.execSQL(CREATE_RECHARGE_RECORD);
         db.execSQL(CREATE_MEMBER_PURCHASE_RECORD);
         db.execSQL(CREATE_WALLET_FLOW_RECORD);
+        db.execSQL(CREATE_COMMUNITY_POST);
 
 
 
@@ -149,6 +158,13 @@ public class databaseHelp extends SQLiteOpenHelper {
                 "('root','root','root','男','12345678901','2005.11.20')," +
                 "('lx','lx','lx','男','12345678901','2005.11.20')," +
                 "('1','1','1','女','12345678901','2005.11.20');");
+
+        // 初始化社区示例帖子（v7）
+        db.execSQL("insert into community_post (title,content,username,create_time) values " +
+                "('健身新手一周怎么练？','刚开始健身总是坚持不下来，我的建议是：\\n1）先每周3练（胸背腿）\\n2）每天30分钟快走\\n3）别一开始就练太猛\\n坚持一个月就会明显变好～','lx','2026-01-12 18:20')," +
+                "('减脂期三餐食谱分享','我最近减脂吃得比较干净：\\n早餐：鸡蛋+燕麦+牛奶\\n午餐：鸡胸+糙米+青菜\\n晚餐：番茄鸡蛋汤+水果\\n低油低糖，饱腹感还不错！','user11','2026-01-14 12:05')," +
+                "('器材租什么最划算？','如果预算有限，我最推荐先租：\\n1）哑铃（最通用）\\n2）瑜伽垫（练核心必备）\\n3）拉力绳（性价比很高）\\n先练出习惯再考虑升级装备！','1','2026-01-15 09:30');");
+
     }
 
     // 插入图片
@@ -597,7 +613,10 @@ public class databaseHelp extends SQLiteOpenHelper {
             try { db.execSQL(CREATE_WALLET_FLOW_RECORD); } catch (Exception ignored) {}
         }
 
-
+        // v7：社区帖子表
+        if (oldVersion < 7) {
+            try { db.execSQL(CREATE_COMMUNITY_POST); } catch (Exception ignored) {}
+        }
 
     }
 
@@ -915,5 +934,68 @@ public class databaseHelp extends SQLiteOpenHelper {
         return 0;
     }
 
+// ======================= v7：社区帖子 =======================
+
+    /** 获取社区帖子列表（按最新倒序） */
+    public java.util.List<com.example.administrator.sportmanager.admin.bean.Post> queryAllCommunityPosts() {
+        SQLiteDatabase db = getReadableDatabase();
+        java.util.List<com.example.administrator.sportmanager.admin.bean.Post> list = new java.util.ArrayList<>();
+
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT _id,title,content,username,create_time FROM community_post ORDER BY _id DESC", null);
+            while (c.moveToNext()) {
+                long id = c.getLong(0);
+                String title = c.getString(1);
+                String content = c.getString(2);
+                String username = c.getString(3);
+                String time = c.getString(4);
+                list.add(new com.example.administrator.sportmanager.admin.bean.Post(id, title, content, username, time));
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+
+        return list;
+    }
+
+    /** 根据 id 查询帖子详情 */
+    public com.example.administrator.sportmanager.admin.bean.Post queryCommunityPostById(long postId) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT _id,title,content,username,create_time FROM community_post WHERE _id=? LIMIT 1",
+                    new String[]{String.valueOf(postId)});
+            if (c != null && c.moveToFirst()) {
+                long id = c.getLong(0);
+                String title = c.getString(1);
+                String content = c.getString(2);
+                String username = c.getString(3);
+                String time = c.getString(4);
+                return new com.example.administrator.sportmanager.admin.bean.Post(id, title, content, username, time);
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return null;
+    }
+
+    /** 是否存在帖子（用于判断是否空数据） */
+    public boolean hasCommunityPosts() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT COUNT(*) FROM community_post", null);
+            if (c != null && c.moveToFirst()) {
+                return c.getInt(0) > 0;
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return false;
+    }
 
 }

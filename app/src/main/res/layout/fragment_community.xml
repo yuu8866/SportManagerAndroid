@@ -3,23 +3,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F6F7FB"
-    android:gravity="center"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:padding="14dp">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="社区功能开发中..."
+        android:text="社区 · 热门帖子"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="#222222"/>
+        android:textColor="#222222" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="敬请期待 ✨"
-        android:textSize="14sp"
-        android:textColor="#666666"
-        android:layout_marginTop="8dp"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_posts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp" />
+
 </LinearLayout>
