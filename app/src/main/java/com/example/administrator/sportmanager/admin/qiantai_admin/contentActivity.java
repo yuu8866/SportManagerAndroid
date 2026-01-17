@@ -100,7 +100,11 @@ public class contentActivity extends AppCompatActivity implements View.OnClickLi
                         Intent intent3 = new Intent(contentActivity.this, UserUpdateInfo.class);
                         startActivity(intent3);
                         break;
-
+                    case R.id.wallet:
+                        //跳转到个人钱包
+                        Intent walletIntent = new Intent(contentActivity.this, WalletActivity.class);
+                        startActivity(walletIntent);
+                        break;
                     case R.id.exit:
                         Intent intent5 = new Intent(contentActivity.this, MainActivity.class);
                         startActivity(intent5);

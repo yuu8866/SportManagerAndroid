@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class databaseHelp extends SQLiteOpenHelper {
     private static final String DB_NAME = "CMP.db";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 6;
 
     public databaseHelp(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -38,7 +38,51 @@ public class databaseHelp extends SQLiteOpenHelper {
     public static final String Sport_Comment = "comment";
     public static final String Sport_Img = "img";
 
-    private static final String Creat_table = "create table admin(_id integer primary key autoincrement,user text  , name text, password text,sex text, phone text, birthday text)";
+    // v4 新增字段：wallet_balance(余额) / member_expire(会员到期日：yyyy-MM-dd)
+    private static final String Creat_table =
+            "create table admin(_id integer primary key autoincrement," +
+                    "user text," +
+                    "name text," +
+                    "password text," +
+                    "sex text," +
+                    "phone text," +
+                    "birthday text," +
+                    "wallet_balance real DEFAULT 0," +
+                    "member_expire text)";
+
+    // v5：充值记录表
+    private static final String CREATE_RECHARGE_RECORD =
+            "create table wallet_recharge_record(" +
+                    "_id integer primary key autoincrement," +
+                    "user text," +
+                    "amount real," +
+                    "channel text," +
+                    "create_time text)";
+
+    // v5：会员购买记录表
+    private static final String CREATE_MEMBER_PURCHASE_RECORD =
+            "create table member_purchase_record(" +
+                    "_id integer primary key autoincrement," +
+                    "user text," +
+                    "card_type text," +
+                    "amount real," +
+                    "channel text," +
+                    "start_date text," +
+                    "expire_date text," +
+                    "create_time text)";
+
+    // v6：钱包流水记录表（充值/租借扣款/会员开通/退款等）
+    private static final String CREATE_WALLET_FLOW_RECORD =
+            "create table wallet_flow_record(" +
+                    "_id integer primary key autoincrement," +
+                    "user text," +
+                    "biz_type text," +
+                    "amount real," +
+                    "channel text," +
+                    "balance_after real," +
+                    "create_time text)";
+
+
 
     public static final String Creat_table1 = "create table sports1 ("
             + id + " integer primary key autoincrement," + Sport_id + "," + Sport_Name + "," + Sport_Type + " text,"
@@ -76,6 +120,11 @@ public class databaseHelp extends SQLiteOpenHelper {
         db.execSQL(Creat_table2);
         db.execSQL(Creat_table3);
         db.execSQL(Creat_table5);
+        db.execSQL(CREATE_RECHARGE_RECORD);
+        db.execSQL(CREATE_MEMBER_PURCHASE_RECORD);
+        db.execSQL(CREATE_WALLET_FLOW_RECORD);
+
+
 
 
         // 初始化器材
@@ -194,7 +243,7 @@ public class databaseHelp extends SQLiteOpenHelper {
         db.close();
     }
 
-    // ✅ 兼容 admin_add_sport.java 里旧的调用：helper.insersporttdata(...)
+    // 兼容 admin_add_sport.java 里旧的调用：helper.insersporttdata(...)
     public void insersporttdata(String sportid, String name, String type, String user,
                                 String owner, String price, String rank, String comment, byte[] img)
     {
@@ -211,6 +260,28 @@ public class databaseHelp extends SQLiteOpenHelper {
         db.insert(Table_Name2, null, values);
         db.close();
     }
+
+    // ✅ 查询当前用户已支付的借用单（主页用）
+    public Cursor queryActiveBorrow(String username) {
+        db = getReadableDatabase();
+        return db.rawQuery(
+                "SELECT _Bid as _id, sportname, pay_time, days " +
+                        "FROM borrow WHERE Borname=? AND pay_status=1 " +
+                        "ORDER BY _Bid DESC LIMIT 5",
+                new String[]{username}
+        );
+    }
+
+    // ✅ 推荐器材：rank高 -> 推荐（主页用）
+    public Cursor queryRecommendSports() {
+        db = getReadableDatabase();
+        return db.rawQuery(
+                "SELECT _id, sportid, name, type, user, owner, price, rank, comment, img " +
+                        "FROM sports ORDER BY rank DESC LIMIT 6",
+                null
+        );
+    }
+
 
 
     // 查询所有器材
@@ -292,6 +363,73 @@ public class databaseHelp extends SQLiteOpenHelper {
         db.close();
     }
 
+    // ======================= 主页：借用概览 =======================
+
+    /** 当前用户：查询“已支付”的借用订单（主页用） */
+    public Cursor queryActiveBorrowForHome(String username) {
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = "SELECT _Bid AS _id, sportname, pay_time, days " +
+                "FROM borrow WHERE Borname=? AND pay_status=1 " +
+                "ORDER BY _Bid DESC LIMIT 5";
+        return db.rawQuery(sql, new String[]{username});
+    }
+
+    /** 当前用户：查询“当前借用数量”（已支付） */
+    public int queryActiveBorrowCount(String username) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT COUNT(*) FROM borrow WHERE Borname=? AND pay_status=1",
+                    new String[]{username});
+            if (c.moveToFirst()) return c.getInt(0);
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return 0;
+    }
+
+// ======================= 主页：偏好推荐（按历史借用类型） =======================
+
+    /** 查询用户历史最常借的器材类型（通过 borrow 表 + sports 表联表统计） */
+    public String queryFavoriteSportType(String username) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            String sql =
+                    "SELECT s.type, COUNT(*) AS cnt " +
+                            "FROM borrow b " +
+                            "JOIN sports s ON b.sportid = s.sportid " +
+                            "WHERE b.Borname=? AND b.pay_status=1 " +
+                            "GROUP BY s.type " +
+                            "ORDER BY cnt DESC LIMIT 1";
+            c = db.rawQuery(sql, new String[]{username});
+            if (c.moveToFirst()) {
+                return c.getString(0);
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return null;
+    }
+
+    /** 推荐器材：按类型优先推荐（否则热门 rank 推荐） */
+    public Cursor queryRecommendSportsByType(String type) {
+        SQLiteDatabase db = getReadableDatabase();
+        if (type == null || type.trim().isEmpty()) {
+            return db.rawQuery(
+                    "SELECT _id, sportid, name, type, user, owner, price, rank, comment, img " +
+                            "FROM sports ORDER BY rank DESC LIMIT 6",
+                    null
+            );
+        }
+        return db.rawQuery(
+                "SELECT _id, sportid, name, type, user, owner, price, rank, comment, img " +
+                        "FROM sports WHERE type=? ORDER BY rank DESC LIMIT 6",
+                new String[]{type}
+        );
+    }
 
     public void delBorrowById(int borrowId) {
         db = getWritableDatabase();
@@ -363,14 +501,14 @@ public class databaseHelp extends SQLiteOpenHelper {
         return data;
     }
 
-    // ✅ 取消支付：按订单主键 _Bid 删除一条 borrow 记录
+    // 取消支付：按订单主键 _Bid 删除一条 borrow 记录
     public void delBorrowByBid(int borrowId) {
         db = getWritableDatabase();
         db.delete(Table_Name3, "_Bid=?", new String[]{String.valueOf(borrowId)});
         db.close();
     }
 
-    // ✅ 确认支付：把 pay_status 改为 1，并写入 pay_time
+    // 确认支付：把 pay_status 改为 1，并写入 pay_time
     public int markBorrowPaid(int borrowId, String payTime) {
         db = getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -388,7 +526,7 @@ public class databaseHelp extends SQLiteOpenHelper {
         return db.query(Table_Name5, null, "Borname=?", new String[]{str}, null, null, null);
     }
 
-    // ✅ 查询borrow表（按用户）——补上 days！（你租赁信息页面就是靠这个）
+    // 查询borrow表（按用户）——补上 days！（你租赁信息页面就是靠这个）
     @SuppressLint("Range")
     public List<Map<String, Object>> queryborrow(String str) {
         List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
@@ -442,6 +580,25 @@ public class databaseHelp extends SQLiteOpenHelper {
             try { db.execSQL("ALTER TABLE borrow ADD COLUMN pay_status integer DEFAULT 0"); } catch (Exception ignored) {}
             try { db.execSQL("ALTER TABLE borrow ADD COLUMN pay_time text"); } catch (Exception ignored) {}
         }
+        // v4：增加钱包余额与会员到期日
+        if (oldVersion < 4) {
+            try { db.execSQL("ALTER TABLE admin ADD COLUMN wallet_balance real DEFAULT 0"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE admin ADD COLUMN member_expire text"); } catch (Exception ignored) {}
+        }
+
+        // v5：充值记录/会员购买记录表
+        if (oldVersion < 5) {
+            try { db.execSQL(CREATE_RECHARGE_RECORD); } catch (Exception ignored) {}
+            try { db.execSQL(CREATE_MEMBER_PURCHASE_RECORD); } catch (Exception ignored) {}
+        }
+
+        // v6：钱包流水记录表
+        if (oldVersion < 6) {
+            try { db.execSQL(CREATE_WALLET_FLOW_RECORD); } catch (Exception ignored) {}
+        }
+
+
+
     }
 
     // 打开外键
@@ -478,4 +635,285 @@ public class databaseHelp extends SQLiteOpenHelper {
         cursor.close();
         return exists;
     }
+
+    // ======================= v4：钱包/会员相关 =======================
+
+    /** 获取用户余额（默认 0） */
+    public double getWalletBalance(String username) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT wallet_balance FROM admin WHERE user=? LIMIT 1", new String[]{username});
+            if (c != null && c.moveToFirst()) {
+                return c.getDouble(0);
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return 0;
+    }
+
+    /** 更新用户余额 */
+    public void updateWalletBalance(String username, double newBalance) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("wallet_balance", newBalance);
+        db.update("admin", values, "user=?", new String[]{username});
+    }
+
+    /** 获取会员到期日 yyyy-MM-dd，可能为 null/"" */
+    public String getMemberExpire(String username) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT member_expire FROM admin WHERE user=? LIMIT 1", new String[]{username});
+            if (c != null && c.moveToFirst()) {
+                return c.getString(0);
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return null;
+    }
+
+    /** 更新会员到期日 yyyy-MM-dd */
+    public void updateMemberExpire(String username, String expireDate) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("member_expire", expireDate);
+        db.update("admin", values, "user=?", new String[]{username});
+    }
+
+    /**
+     * 管理员端：查询用户列表（附加 member_status 字段：会员用户/普通用户）
+     * - member_expire 必须是 yyyy-MM-dd 才能与 SQLite date('now') 比较
+     */
+    public Cursor queryUsersWithMemberInfo() {
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = "SELECT _id,user,password,name,sex,birthday,phone,member_expire, " +
+                "CASE WHEN member_expire IS NOT NULL AND member_expire != '' AND member_expire >= date('now') " +
+                "THEN '会员用户' ELSE '普通用户' END AS member_status " +
+                "FROM admin";
+        return db.rawQuery(sql, null);
+    }
+
+    // ======================= v5：记录&会员权限 =======================
+
+    /** 是否会员有效 */
+    public boolean isMemberActive(String username) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery(
+                    "SELECT member_expire FROM admin WHERE user=? LIMIT 1",
+                    new String[]{username}
+            );
+            if (c != null && c.moveToFirst()) {
+                String expire = c.getString(0);
+                if (expire == null || expire.trim().isEmpty()) return false;
+
+                // member_expire 必须 yyyy-MM-dd
+                Cursor t = db.rawQuery("SELECT CASE WHEN ? >= date('now') THEN 1 ELSE 0 END",
+                        new String[]{expire});
+                try {
+                    return t.moveToFirst() && t.getInt(0) == 1;
+                } finally {
+                    t.close();
+                }
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return false;
+    }
+
+    /** 会员折扣：9折 */
+    public double getMemberDiscountRate(String username) {
+        return isMemberActive(username) ? 0.9 : 1.0;
+    }
+
+    /** 器材是否已被借出（pay_status=1 视为已借出） */
+    public boolean isSportBorrowedByOthers(int sportId) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT COUNT(*) FROM borrow WHERE sportid=? AND pay_status=1",
+                    new String[]{String.valueOf(sportId)});
+            return c.moveToFirst() && c.getInt(0) > 0;
+        } finally {
+            if (c != null) c.close();
+        }
+    }
+
+    /** 插入充值记录 */
+    public void insertRechargeRecord(String username, double amount, String channel, String createTime) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("user", username);
+        cv.put("amount", amount);
+        cv.put("channel", channel);
+        cv.put("create_time", createTime);
+        db.insert("wallet_recharge_record", null, cv);
+    }
+
+    /** 获取充值记录（最新在前） */
+    public List<String> getRechargeRecordLines(String username, int limit) {
+        List<String> list = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery(
+                    "SELECT amount,channel,create_time FROM wallet_recharge_record " +
+                            "WHERE user=? ORDER BY _id DESC LIMIT " + limit,
+                    new String[]{username}
+            );
+            while (c.moveToNext()) {
+                double amt = c.getDouble(0);
+                String ch = c.getString(1);
+                String t = c.getString(2);
+                list.add("充值 ¥" + String.format("%.2f", amt) + "  |  " + ch + "\n" + t);
+            }
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
+    }
+
+    /** 插入会员购买记录 */
+    public void insertMemberPurchaseRecord(String username, String cardType, double amount,
+                                           String channel, String startDate, String expireDate, String createTime) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("user", username);
+        cv.put("card_type", cardType);
+        cv.put("amount", amount);
+        cv.put("channel", channel);
+        cv.put("start_date", startDate);
+        cv.put("expire_date", expireDate);
+        cv.put("create_time", createTime);
+        db.insert("member_purchase_record", null, cv);
+    }
+
+    /** 获取会员购买记录（最新在前） */
+    public List<String> getMemberPurchaseRecordLines(String username, int limit) {
+        List<String> list = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery(
+                    "SELECT card_type,amount,channel,expire_date,create_time FROM member_purchase_record " +
+                            "WHERE user=? ORDER BY _id DESC LIMIT " + limit,
+                    new String[]{username}
+            );
+            while (c.moveToNext()) {
+                String type = c.getString(0);
+                double amt = c.getDouble(1);
+                String ch = c.getString(2);
+                String expire = c.getString(3);
+                String t = c.getString(4);
+                list.add(type + "  ¥" + String.format("%.2f", amt) + "  |  " + ch +
+                        "\n到期：" + expire + "\n" + t);
+            }
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
+    }
+    // ======================= v6：钱包流水 =======================
+
+    /** 插入钱包流水 */
+    public void insertWalletFlow(String username, String bizType, double amount,
+                                 String channel, double balanceAfter, String createTime) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("user", username);
+        cv.put("biz_type", bizType);
+        cv.put("amount", amount);
+        cv.put("channel", channel);
+        cv.put("balance_after", balanceAfter);
+        cv.put("create_time", createTime);
+        db.insert("wallet_flow_record", null, cv);
+    }
+
+    /** 获取钱包流水（最新在前） */
+    public List<String> getWalletFlowLines(String username, int limit) {
+        List<String> list = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery(
+                    "SELECT biz_type,amount,channel,balance_after,create_time " +
+                            "FROM wallet_flow_record WHERE user=? ORDER BY _id DESC LIMIT " + limit,
+                    new String[]{username}
+            );
+            while (c.moveToNext()) {
+                String type = c.getString(0);
+                double amt = c.getDouble(1);
+                String ch = c.getString(2);
+                double after = c.getDouble(3);
+                String t = c.getString(4);
+
+                String sign = (amt >= 0) ? "+" : "";
+                list.add(type + "  " + sign + String.format("%.2f", amt) +
+                        "  |  " + ch +
+                        "\n余额：" + String.format("%.2f", after) +
+                        "\n" + t);
+            }
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
+    }
+
+    // ======================= 个人主页：统计数据 =======================
+
+    /** 历史借用次数（已支付） */
+    public int queryBorrowHistoryCount(String username) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT COUNT(*) FROM borrow WHERE Borname=? AND pay_status=1",
+                    new String[]{username});
+            if (c.moveToFirst()) return c.getInt(0);
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return 0;
+    }
+
+    /** 收藏数量 */
+    public int queryCollectCount(String username) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT COUNT(*) FROM collect WHERE Borname=?",
+                    new String[]{username});
+            if (c.moveToFirst()) return c.getInt(0);
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return 0;
+    }
+
+    /** 总消费金额（已支付订单 total_price 求和） */
+    public double queryTotalSpend(String username) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT IFNULL(SUM(total_price),0) FROM borrow WHERE Borname=? AND pay_status=1",
+                    new String[]{username});
+            if (c.moveToFirst()) return c.getDouble(0);
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return 0;
+    }
+
+
 }

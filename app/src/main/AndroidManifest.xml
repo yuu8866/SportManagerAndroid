@@ -36,6 +36,8 @@
             android:exported="true"
             android:label="@string/app_name">
 
+
+
             <!-- 设置打开app起始activity -->
 
         </activity>
@@ -60,6 +62,18 @@
         <activity android:name=".admin.qiantai_admin.PayActivity" />
         <activity android:name=".admin.qiantai_admin.user_search_sports" />
         <activity android:name=".admin.qiantai_admin.SearchActivity" />
+        <!-- v4：个人钱包/会员 -->
+        <activity
+            android:name=".admin.qiantai_admin.WalletActivity"
+            android:exported="true" />
+        <activity
+            android:name=".admin.qiantai_admin.MemberCardActivity"
+            android:exported="true" />
+        <activity android:name=".admin.qiantai_admin.UserNavActivity" android:exported="true"/>
+
+        <activity android:name=".admin.qiantai_admin.UserProfileActivity"/>
+
+        <activity android:name=".admin.qiantai_admin.UserProfileAdvancedActivity"/>
 
     </application>
 

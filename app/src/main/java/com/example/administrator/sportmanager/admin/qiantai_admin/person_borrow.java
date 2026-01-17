@@ -95,8 +95,6 @@ public class person_borrow extends AppCompatActivity {
         });
 
 
-
-
     }
     public Map solveData(int i){
         map = data.get(i);

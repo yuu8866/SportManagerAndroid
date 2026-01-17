@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="请选择支付方式"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/et_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="请输入金额"
+        android:inputType="numberDecimal" />
+
+    <RadioGroup
+        android:id="@+id/rg_pay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp">
+
+        <RadioButton
+            android:id="@+id/rb_alipay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="支付宝" />
+
+        <RadioButton
+            android:id="@+id/rb_wechat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="微信支付" />
+
+        <RadioButton
+            android:id="@+id/rb_unionpay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="银联" />
+
+        <RadioButton
+            android:id="@+id/rb_balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="余额支付" />
+
+    </RadioGroup>
+
+</LinearLayout>

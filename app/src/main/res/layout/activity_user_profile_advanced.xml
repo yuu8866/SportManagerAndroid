@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F6F7FB">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/profileTopBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:title="个人主页"
+            android:titleTextColor="@color/white"
+            app:navigationIcon="@android:drawable/ic_menu_revert"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <!-- 顶部卡片：头像+会员徽章 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="14dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="62dp"
+                        android:layout_height="62dp"
+                        app:cardCornerRadius="99dp"
+                        app:cardElevation="0dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@android:drawable/sym_def_app_icon"
+                            android:scaleType="centerCrop"/>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="12dp">
+
+                        <TextView
+                            android:id="@+id/tv_profile_username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="用户：xxx"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#222222"/>
+
+                        <TextView
+                            android:id="@+id/tv_profile_member"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="普通用户"
+                            android:textColor="#666666"
+                            android:layout_marginTop="6dp"/>
+
+                        <TextView
+                            android:id="@+id/tv_profile_member_left"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="会员剩余：-"
+                            android:textColor="#888888"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_vip_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="VIP"
+                        android:textColor="#FFFFFF"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:background="#FF9800"
+                        android:visibility="gone"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 统计卡片（4个） -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
+
+                        <TextView android:text="余额" android:textColor="#666666"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:id="@+id/tv_profile_balance"
+                            android:text="0.00"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="#222222"
+                            android:layout_marginTop="6dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
+
+                        <TextView android:text="借用中" android:textColor="#666666"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:id="@+id/tv_profile_borrow_count"
+                            android:text="0"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="#222222"
+                            android:layout_marginTop="6dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
+
+                        <TextView android:text="收藏数" android:textColor="#666666"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:id="@+id/tv_profile_collect_count"
+                            android:text="0"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="#222222"
+                            android:layout_marginTop="6dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="110dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="12dp"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
+
+                        <TextView android:text="总消费" android:textColor="#666666"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:id="@+id/tv_profile_total_spend"
+                            android:text="0.00"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="#222222"
+                            android:layout_marginTop="6dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- 快捷按钮 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="快捷入口"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#222222"
+                android:layout_marginTop="16dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_profile_wallet"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="进入钱包"
+                app:cornerRadius="14dp"
+                android:layout_marginTop="10dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_profile_myborrow"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="查看我的借用"
+                app:cornerRadius="14dp"
+                android:layout_marginTop="10dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_profile_member"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="会员中心"
+                app:cornerRadius="14dp"
+                android:layout_marginTop="10dp"/>
+
+            <!-- 记录 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="充值记录（最近5条）"
+                android:textStyle="bold"
+                android:textColor="#222222"
+                android:textSize="16sp"
+                android:layout_marginTop="18dp"/>
+
+            <ListView
+                android:id="@+id/lv_recharge_record"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:dividerHeight="8dp"
+                android:divider="@android:color/transparent"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="会员购买记录（最近5条）"
+                android:textStyle="bold"
+                android:textColor="#222222"
+                android:textSize="16sp"
+                android:layout_marginTop="18dp"/>
+
+            <ListView
+                android:id="@+id/lv_member_record"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:dividerHeight="8dp"
+                android:divider="@android:color/transparent"
+                android:layout_marginTop="8dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -41,6 +41,9 @@ public class borrowActivity extends AppCompatActivity {
     private String str, sport_id, sport_name;
     private ListView listView;
 
+    private int intbid;  // 当前器材ID
+
+
     // 保存用户最近一次选择的租赁天数（默认1）
     private int days = 1;
 
@@ -164,12 +167,17 @@ public class borrowActivity extends AppCompatActivity {
     private void showRentDaysDialog(final databaseHelp help) {
         final NumberPicker picker = new NumberPicker(this);
         picker.setMinValue(1);
-        picker.setMaxValue(30);
+        SharedPreferences perf = getSharedPreferences("data", MODE_PRIVATE);
+        String username = perf.getString("users", "");
+        boolean isMember = help.isMemberActive(username);
+
+        picker.setMaxValue(isMember ? 30 : 7);
+
         picker.setValue(1);
         picker.setWrapSelectorWheel(false);
 
         final AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("请选择租赁天数（1~30天）")
+                .setTitle("请选择租赁天数（1~30天），会员可租赁天数为（1~60天）")
                 .setView(picker)
                 .setNegativeButton("取消", (d, which) -> d.dismiss())
                 .setPositiveButton("确定", null)
@@ -181,7 +189,9 @@ public class borrowActivity extends AppCompatActivity {
                 this.days = selectedDays;             // 记录下来（可选）
 
                 doBorrowWithDays(help, selectedDays);
+
                 dialog.dismiss();
+
             });
         });
 
@@ -206,6 +216,14 @@ public class borrowActivity extends AppCompatActivity {
             if (cur != null) cur.close();
         }
 
+        boolean isMember = help.isMemberActive(username);
+
+// 如果器材已被借出，普通用户拦截，会员允许继续（优先借用）
+        if (help.isSportBorrowedByOthers(intbid) && !isMember) {
+            Toast.makeText(this, "该器材已借出，会员可优先借用", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // 写入 borrow 表
         String strbid = borrow_sportid.getText().toString();
         String strbauthor = borrow_sportwriter.getText().toString();
@@ -225,7 +243,14 @@ public class borrowActivity extends AppCompatActivity {
         try { dayPriceYuan = Double.parseDouble(rankStr); } catch (Exception ignore) {}
 
         int dayFen = (int) Math.round(dayPriceYuan * 100);  // 4.9 -> 490
-        int totalFen = dayFen * days;                       // 490*2 -> 980
+        int totalFen = dayFen * days;
+        double rate = help.getMemberDiscountRate(username); // 会员 0.9
+        totalFen = (int) Math.round(totalFen * rate);
+
+        if (rate < 1.0) {
+            Toast.makeText(this, "会员享受9折优惠", Toast.LENGTH_SHORT).show();
+        }
+
 
         values.put("days", days);
         values.put("total_price", totalFen);  // ✅ 用“分”存
