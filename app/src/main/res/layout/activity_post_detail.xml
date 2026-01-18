@@ -1,74 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F6F7FB">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="14dp">
+    <!-- 上半部分内容：用 ScrollView（防止内容长时被挡住） -->
+    <ScrollView
+        android:id="@+id/sv_detail"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_detail_back"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="14dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="#FFFFFF"
-            android:clickable="false">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="14dp">
+                app:cardCornerRadius="14dp"
+                app:cardElevation="2dp">
 
-                <!-- 发帖人信息（顶部像小红书那样） -->
-                <TextView
-                    android:id="@+id/tv_detail_user"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="user11"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#222222" />
+                    android:orientation="vertical"
+                    android:padding="14dp">
 
-                <!-- 帖子标题 -->
-                <TextView
-                    android:id="@+id/tv_detail_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="帖子标题"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#222222"
-                    android:layout_marginTop="10dp" />
+                    <!-- 用户信息 + 收藏 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
 
-                <!-- 帖子正文 -->
-                <TextView
-                    android:id="@+id/tv_detail_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="帖子内容..."
-                    android:textSize="14sp"
-                    android:textColor="#333333"
-                    android:layout_marginTop="10dp"
-                    android:lineSpacingExtra="4dp" />
+                        <TextView
+                            android:id="@+id/tv_detail_user"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="user11"
+                            android:textColor="#222222"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
 
-                <!-- 发帖时间（正文结束下方显示） -->
-                <TextView
-                    android:id="@+id/tv_detail_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="2026-01-17 14:30"
-                    android:textSize="12sp"
-                    android:textColor="#888888"
-                    android:layout_marginTop="14dp" />
+                        <Button
+                            android:id="@+id/btn_collect_post"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="收藏"
+                            android:textSize="12sp"
+                            android:paddingLeft="12dp"
+                            android:paddingRight="12dp" />
 
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
 
-    </LinearLayout>
-</ScrollView>
+                    <!-- 标题 -->
+                    <TextView
+                        android:id="@+id/tv_detail_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="帖子标题"
+                        android:textColor="#111111"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="10dp" />
+
+                    <!-- 正文 -->
+                    <TextView
+                        android:id="@+id/tv_detail_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="帖子正文..."
+                        android:textColor="#333333"
+                        android:textSize="14sp"
+                        android:layout_marginTop="10dp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <!-- 时间 -->
+                    <TextView
+                        android:id="@+id/tv_detail_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="2026-01-15 09:30"
+                        android:textColor="#777777"
+                        android:textSize="12sp"
+                        android:gravity="end"
+                        android:layout_marginTop="12dp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 底部返回按钮：固定贴底 -->
+    <Button
+        android:id="@+id/btn_detail_back"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="返回"
+        android:layout_margin="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

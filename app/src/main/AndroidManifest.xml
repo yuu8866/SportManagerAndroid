@@ -79,6 +79,11 @@
             android:name=".admin.qiantai_admin.PostDetailActivity"
             android:exported="true" />
 
+        <activity
+            android:name=".admin.qiantai_admin.PostPublishActivity"
+            android:exported="true"/>
+
+
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.example.administrator.sportmanager.admin.qiantai_admin;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,48 +14,52 @@ import com.example.administrator.sportmanager.admin.bean.Post;
 
 import java.util.List;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+/**
+ * 社区帖子列表适配器（正方形卡片，两列展示）
+ */
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.VH> {
 
     public interface OnPostClickListener {
-        void onClick(Post post);
+        void onPostClick(Post post);
     }
 
-    private final List<Post> postList;
+    private final Context context;
+    private final List<Post> data;
     private final OnPostClickListener listener;
 
-    public PostAdapter(List<Post> postList, OnPostClickListener listener) {
-        this.postList = postList;
+    public PostAdapter(Context context, List<Post> data, OnPostClickListener listener) {
+        this.context = context;
+        this.data = data;
         this.listener = listener;
     }
 
     @NonNull
     @Override
-    public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post, parent, false);
-        return new PostViewHolder(v);
+    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(context).inflate(R.layout.item_post, parent, false);
+        return new VH(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        Post post = postList.get(position);
-        holder.tvTitle.setText(post.getTitle());
-        holder.tvUser.setText("发帖人：" + post.getUsername());
+    public void onBindViewHolder(@NonNull VH holder, int position) {
+        Post p = data.get(position);
+        holder.tvTitle.setText(p.getTitle());
+        holder.tvUser.setText("发帖人：" + p.getUsername());
 
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onClick(post);
+            if (listener != null) listener.onPostClick(p);
         });
     }
 
     @Override
     public int getItemCount() {
-        return postList == null ? 0 : postList.size();
+        return data == null ? 0 : data.size();
     }
 
-    static class PostViewHolder extends RecyclerView.ViewHolder {
-
+    static class VH extends RecyclerView.ViewHolder {
         TextView tvTitle, tvUser;
 
-        public PostViewHolder(@NonNull View itemView) {
+        VH(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tv_post_title);
             tvUser = itemView.findViewById(R.id.tv_post_user);
