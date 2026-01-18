@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="6dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_collect_post_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="帖子标题"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="#222222"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <Button
+                android:id="@+id/btn_cancel_collect_post"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:text="取消收藏"
+                android:textSize="12sp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_collect_post_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="发帖人：user11"
+            android:textSize="12sp"
+            android:textColor="#666666"
+            android:layout_marginTop="6dp" />
+
+        <TextView
+            android:id="@+id/tv_collect_post_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2026-01-15 09:30"
+            android:textSize="12sp"
+            android:textColor="#999999"
+            android:gravity="end"
+            android:layout_marginTop="6dp" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

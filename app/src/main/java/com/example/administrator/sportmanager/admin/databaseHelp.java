@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class databaseHelp extends SQLiteOpenHelper {
     private static final String DB_NAME = "CMP.db";
-    private static final int DB_VERSION = 6;
+    private static final int DB_VERSION = 7;
 
     public databaseHelp(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -82,6 +82,25 @@ public class databaseHelp extends SQLiteOpenHelper {
                     "balance_after real," +
                     "create_time text)";
 
+    // ======================= v7：社区帖子 =======================
+    private static final String CREATE_COMMUNITY_POST =
+            "create table community_post(" +
+                    "_id integer primary key autoincrement," +
+                    "title text," +
+                    "content text," +
+                    "username text," +
+                    "create_time text" +
+                    ")";
+
+    // ======================= v7：帖子收藏（我的收藏里展示） =======================
+    private static final String CREATE_COMMUNITY_POST_COLLECT =
+            "create table IF NOT EXISTS community_post_collect(" +
+                    "_id integer primary key autoincrement," +
+                    "post_id integer," +
+                    "user text," +
+                    "collect_time text" +
+                    ")";
+
 
 
     public static final String Creat_table1 = "create table sports1 ("
@@ -123,7 +142,8 @@ public class databaseHelp extends SQLiteOpenHelper {
         db.execSQL(CREATE_RECHARGE_RECORD);
         db.execSQL(CREATE_MEMBER_PURCHASE_RECORD);
         db.execSQL(CREATE_WALLET_FLOW_RECORD);
-
+        db.execSQL(CREATE_COMMUNITY_POST);
+        db.execSQL(CREATE_COMMUNITY_POST_COLLECT);
 
 
 
@@ -146,9 +166,16 @@ public class databaseHelp extends SQLiteOpenHelper {
         // 初始化用户
         db.execSQL("insert into admin (user,name,password,sex,phone,birthday) values " +
                 "('admin','admin','admin','男','12345678901','2005.11.20')," +
-                "('root','root','root','男','12345678901','2005.11.20')," +
-                "('lx','lx','lx','男','12345678901','2005.11.20')," +
-                "('1','1','1','女','12345678901','2005.11.20');");
+                "('root','root','root123456','男','12345678901','2005.11.20')," +
+                "('lx','lx','lx123456','男','12345678901','2005.11.20')," +
+                "('1','1','123456','女','12345678901','2005.11.20');");
+
+        // 初始化社区示例帖子（v7）
+        db.execSQL("insert into community_post (title,content,username,create_time) values " +
+                "('健身新手一周怎么练？','刚开始健身总是坚持不下来，我的建议是：\\n1）先每周3练（胸背腿）\\n2）每天30分钟快走\\n3）别一开始就练太猛\\n坚持一个月就会明显变好～','lx','2026-01-12 18:20')," +
+                "('减脂期三餐食谱分享','我最近减脂吃得比较干净：\\n早餐：鸡蛋+燕麦+牛奶\\n午餐：鸡胸+糙米+青菜\\n晚餐：番茄鸡蛋汤+水果\\n低油低糖，饱腹感还不错！','user11','2026-01-14 12:05')," +
+                "('器材租什么最划算？','如果预算有限，我最推荐先租：\\n1）哑铃（最通用）\\n2）瑜伽垫（练核心必备）\\n3）拉力绳（性价比很高）\\n先练出习惯再考虑升级装备！','1','2026-01-15 09:30');");
+
     }
 
     // 插入图片
@@ -597,6 +624,11 @@ public class databaseHelp extends SQLiteOpenHelper {
             try { db.execSQL(CREATE_WALLET_FLOW_RECORD); } catch (Exception ignored) {}
         }
 
+        // v7：社区帖子 + 帖子收藏
+        if (oldVersion < 7) {
+            try { db.execSQL(CREATE_COMMUNITY_POST); } catch (Exception ignored) {}
+            try { db.execSQL(CREATE_COMMUNITY_POST_COLLECT); } catch (Exception ignored) {}
+        }
 
 
     }
@@ -915,5 +947,157 @@ public class databaseHelp extends SQLiteOpenHelper {
         return 0;
     }
 
+// ======================= v7：社区帖子（查询 + 收藏） =======================
+
+    /** 获取社区帖子列表（按最新倒序） */
+    public java.util.List<com.example.administrator.sportmanager.admin.bean.Post> queryAllCommunityPosts() {
+        android.database.sqlite.SQLiteDatabase db = getReadableDatabase();
+        java.util.List<com.example.administrator.sportmanager.admin.bean.Post> list = new java.util.ArrayList<>();
+        android.database.Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT _id,title,content,username,create_time FROM community_post ORDER BY _id DESC", null);
+            while (c.moveToNext()) {
+                long id = c.getLong(0);
+                String title = c.getString(1);
+                String content = c.getString(2);
+                String username = c.getString(3);
+                String time = c.getString(4);
+                list.add(new com.example.administrator.sportmanager.admin.bean.Post(id, title, content, username, time));
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
+    }
+
+    /** 如果帖子表为空，则插入内置示例帖子 */
+    public void ensureSampleCommunityPosts() {
+        android.database.sqlite.SQLiteDatabase db = getWritableDatabase();
+        android.database.Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT COUNT(*) FROM community_post", null);
+            if (c.moveToFirst()) {
+                int count = c.getInt(0);
+                if (count <= 0) {
+                    db.execSQL("INSERT INTO community_post(title,content,username,create_time) VALUES(?,?,?,?)",
+                            new Object[]{"器材租什么最划算？", "如果预算有限，我最推荐先租：\n1) 哑铃（最通用）\n2) 瑜伽垫（练核心必备）\n3) 拉力绳（性价比很高）\n先练出习惯再考虑升级装备！", "1", "2026-01-15 09:30"});
+                    db.execSQL("INSERT INTO community_post(title,content,username,create_time) VALUES(?,?,?,?)",
+                            new Object[]{"减脂期三餐食谱分享", "我最近减脂吃得比较干净：\n早餐：鸡蛋+燕麦+牛奶\n午餐：鸡胸+糙米+青菜\n晚餐：番茄鸡蛋汤+水果\n低油低糖，饱腹感还不错！", "user11", "2026-01-14 12:05"});
+                    db.execSQL("INSERT INTO community_post(title,content,username,create_time) VALUES(?,?,?,?)",
+                            new Object[]{"健身新手一周怎么练？", "新手建议一周 3 练：\nD1：全身力量（深蹲/推/拉）\nD3：有氧+核心\nD5：全身力量\n其余时间多走路+拉伸，动作标准比重量重要！", "lx", "2026-01-13 20:10"});
+                }
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+    }
+
+    /** 根据 id 查询帖子详情 */
+    public com.example.administrator.sportmanager.admin.bean.Post queryCommunityPostById(long postId) {
+        android.database.sqlite.SQLiteDatabase db = getReadableDatabase();
+        android.database.Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT _id,title,content,username,create_time FROM community_post WHERE _id=? LIMIT 1",
+                    new String[]{String.valueOf(postId)});
+            if (c != null && c.moveToFirst()) {
+                long id = c.getLong(0);
+                String title = c.getString(1);
+                String content = c.getString(2);
+                String username = c.getString(3);
+                String time = c.getString(4);
+                return new com.example.administrator.sportmanager.admin.bean.Post(id, title, content, username, time);
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return null;
+    }
+
+    /** 是否已收藏该帖子 */
+    public boolean isPostCollected(String user, long postId) {
+        if (user == null) user = "";
+        android.database.sqlite.SQLiteDatabase db = getReadableDatabase();
+        android.database.Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT _id FROM community_post_collect WHERE user=? AND post_id=? LIMIT 1",
+                    new String[]{user, String.valueOf(postId)});
+            return c != null && c.moveToFirst();
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return false;
+    }
+
+    /** 收藏帖子 */
+    public void addPostCollect(String user, long postId, String collectTime) {
+        if (user == null) user = "";
+        if (collectTime == null) collectTime = "";
+        android.database.sqlite.SQLiteDatabase db = getWritableDatabase();
+        try {
+            db.execSQL("INSERT INTO community_post_collect(post_id,user,collect_time) VALUES(?,?,?)",
+                    new Object[]{postId, user, collectTime});
+        } catch (Exception ignored) {
+        }
+    }
+
+    /** 取消收藏（按 user + postId） */
+    public void cancelPostCollect(String user, long postId) {
+        if (user == null) user = "";
+        android.database.sqlite.SQLiteDatabase db = getWritableDatabase();
+        try {
+            db.execSQL("DELETE FROM community_post_collect WHERE user=? AND post_id=?",
+                    new Object[]{user, postId});
+        } catch (Exception ignored) {
+        }
+    }
+
+    /** 取消收藏（按收藏记录id） */
+    public void delPostCollectByCollectId(long collectId) {
+        android.database.sqlite.SQLiteDatabase db = getWritableDatabase();
+        try {
+            db.execSQL("DELETE FROM community_post_collect WHERE _id=?",
+                    new Object[]{collectId});
+        } catch (Exception ignored) {
+        }
+    }
+
+    /**
+     * 查询“我的收藏 - 社区收藏”
+     * 返回字段：_id(post_collect), post_id, title, username, create_time
+     */
+    public android.database.Cursor queryPostCollectCursor(String user) {
+        if (user == null) user = "";
+        android.database.sqlite.SQLiteDatabase db = getReadableDatabase();
+        try {
+            return db.rawQuery(
+                    "SELECT c._id as _id, p._id as post_id, p.title as title, p.username as username, p.create_time as create_time " +
+                            "FROM community_post_collect c " +
+                            "LEFT JOIN community_post p ON c.post_id = p._id " +
+                            "WHERE c.user=? " +
+                            "ORDER BY c._id DESC",
+                    new String[]{user}
+            );
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    /** 发布帖子：插入一条 community_post */
+    public void insertCommunityPost(String title, String content, String username, String createTime) {
+        SQLiteDatabase db = getWritableDatabase();
+        try {
+            db.execSQL("INSERT INTO community_post(title,content,username,create_time) VALUES(?,?,?,?)",
+                    new Object[]{title, content, username, createTime});
+        } catch (Exception e) {
+            Log.e("DB_POST", "insertCommunityPost error：" + e.getMessage());
+        }
+    }
+
+
+
 
 }
+
