@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/homeScroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F6F7FB">
+    android:background="#F6F7FB"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,16 +29,81 @@
             android:layout_height="wrap_content"
             android:text="今天也要快乐运动哦～"
             android:textColor="#666666"
-            android:layout_marginTop="6dp"/>
+            android:layout_marginTop="6dp" />
 
-        <!-- 信息卡片区域 -->
+        <!-- Banner -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_home_banner"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <TextView
+                    android:id="@+id/tv_banner_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="本周运动计划"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_banner_sub"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="会员 9 折 + 优先借用，热门器材更好抢"
+                    android:textColor="#EAF2FF"
+                    android:textSize="12sp"
+                    android:layout_marginTop="6dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_go_rent"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="去租赁"
+                        android:textColor="#0D47A1"
+                        app:cornerRadius="12dp"
+                        app:backgroundTint="#FFFFFF"
+                        android:layout_marginEnd="8dp" />
+
+                    <!-- ✅ 这个就是你报错缺失的 btn_open_member -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_open_member"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="开通会员"
+                        android:textColor="#FFFFFF"
+                        app:cornerRadius="12dp"
+                        app:backgroundTint="#1B65D6" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 信息卡片 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="12dp">
 
-            <!-- 第一排：余额/会员 -->
+            <!-- 余额/会员 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,8 +115,7 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
                     app:cardCornerRadius="14dp"
-                    app:cardElevation="2dp"
-                    app:strokeWidth="0dp">
+                    app:cardElevation="2dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -89,8 +155,7 @@
                     android:layout_height="110dp"
                     android:layout_weight="1"
                     app:cardCornerRadius="14dp"
-                    app:cardElevation="2dp"
-                    app:strokeWidth="0dp">
+                    app:cardElevation="2dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -128,7 +193,7 @@
 
             </LinearLayout>
 
-            <!-- 第二排：借用数量/最快到期 -->
+            <!-- 借用/到期 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -263,15 +328,42 @@
                 app:cornerRadius="12dp"/>
         </LinearLayout>
 
-        <!-- 当前借用列表 -->
-        <TextView
+        <!-- 借用提醒标题 -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="当前借用提醒"
-            android:textStyle="bold"
-            android:textColor="#222222"
-            android:textSize="16sp"
-            android:layout_marginTop="18dp"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="18dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="当前借用提醒"
+                android:textStyle="bold"
+                android:textColor="#222222"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tv_borrow_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="查看全部 >"
+                android:textColor="#1976D2"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <!-- ✅ 这个就是你报错缺失的 tv_borrow_empty -->
+        <TextView
+            android:id="@+id/tv_borrow_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="暂无借用，去租赁看看热门器材吧～"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"/>
 
         <ListView
             android:id="@+id/lv_borrow_now"
@@ -282,24 +374,56 @@
             android:layout_marginTop="8dp"/>
 
         <!-- 推荐标题 -->
-        <TextView
-            android:id="@+id/tv_recommend_title"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="为你推荐"
-            android:textStyle="bold"
-            android:textColor="#222222"
-            android:textSize="16sp"
-            android:layout_marginTop="18dp"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="18dp">
 
-        <!-- 推荐列表 -->
-        <ListView
-            android:id="@+id/lv_recommend"
+            <TextView
+                android:id="@+id/tv_recommend_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="为你推荐"
+                android:textStyle="bold"
+                android:textColor="#222222"
+                android:textSize="16sp"/>
+
+            <!-- ✅ 这个就是你报错缺失的 tv_recommend_more -->
+            <TextView
+                android:id="@+id/tv_recommend_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="去租赁 >"
+                android:textColor="#1976D2"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <!-- ✅ 这个就是你报错缺失的 tv_recommend_empty -->
+        <TextView
+            android:id="@+id/tv_recommend_empty"
             android:layout_width="match_parent"
-            android:layout_height="380dp"
-            android:dividerHeight="10dp"
-            android:divider="@android:color/transparent"
-            android:layout_marginTop="8dp"/>
+            android:layout_height="wrap_content"
+            android:text="暂无推荐数据"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"/>
 
+        <!-- ✅ 这个就是你报错缺失的 rv_recommend -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_recommend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp"/>
     </LinearLayout>
-</ScrollView>
+
+</androidx.core.widget.NestedScrollView>

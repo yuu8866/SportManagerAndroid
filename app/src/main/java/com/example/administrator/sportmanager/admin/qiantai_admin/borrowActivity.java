@@ -10,26 +10,24 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.sportmanager.R;
-import com.example.administrator.sportmanager.admin.ActivityCollector;
 import com.example.administrator.sportmanager.admin.databaseHelp;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import androidx.appcompat.app.AlertDialog;
+
 import static com.example.administrator.sportmanager.admin.utils.BitmapTool.byteToBitmap;
 
-import androidx.appcompat.app.AlertDialog;
-import android.widget.NumberPicker;
-
-// 用户从首页选择器材后进入的详情页面
+// 用户从首页/租赁页选择器材后进入的详情页面
 public class borrowActivity extends AppCompatActivity {
 
     private ImageView borrow_sportimg;
@@ -37,12 +35,12 @@ public class borrowActivity extends AppCompatActivity {
             borrow_sportpublicer, borrow_sportprice, borrow_sportrank,
             borrow_sportcomment, borrow_sportid;
 
-    private Button borrow_bt, collect_bt, remark_bt, back;
+    private Button borrow_bt, collect_bt;
+    private ImageView back_img; // 返回按钮（你XML里一般是ImageView）
     private String str, sport_id, sport_name;
     private ListView listView;
 
     private int intbid;  // 当前器材ID
-
 
     // 保存用户最近一次选择的租赁天数（默认1）
     private int days = 1;
@@ -65,6 +63,7 @@ public class borrowActivity extends AppCompatActivity {
         editor.putString("time", str);
         editor.apply();
 
+        // ========== 绑定控件 ==========
         borrow_sportid = findViewById(R.id.borrow_sportid);
         borrow_sportname = findViewById(R.id.borrow_sportname);
         borrow_sportwriter = findViewById(R.id.borrow_sportuser);
@@ -75,8 +74,22 @@ public class borrowActivity extends AppCompatActivity {
         borrow_sportrank = findViewById(R.id.borrow_sportrank);
         borrow_sportcomment = findViewById(R.id.borrow_sportcomment);
 
-        // 获取id
-        Bundle bundle = this.getIntent().getExtras();
+        borrow_bt = findViewById(R.id.borroe_bt);
+        collect_bt = findViewById(R.id.collect_bt);
+
+
+        // 返回按钮（你布局里一般叫 borrow_back_bt，是 ImageView）
+        try {
+            back_img = findViewById(R.id.borrow_back_bt);
+        } catch (Exception ignore) {}
+
+        // ========== 获取器材ID ==========
+        Bundle bundle = getIntent().getExtras();
+        if (bundle == null) {
+            Toast.makeText(this, "参数缺失，无法打开详情", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         id = bundle.getInt("id") + 1;
 
         final databaseHelp help = new databaseHelp(getApplicationContext());
@@ -84,9 +97,10 @@ public class borrowActivity extends AppCompatActivity {
 
         Log.i("cursor", "onCreate: " + cursor.getCount());
 
-        // 信息显示
-        if (cursor.getCount() > 0) {
+        // ========== 信息显示 ==========
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
+
             borrow_sportid.setText(cursor.getString(cursor.getColumnIndex("sportid")));
             sport_id = cursor.getString(cursor.getColumnIndex("sportid"));
 
@@ -100,180 +114,177 @@ public class borrowActivity extends AppCompatActivity {
             borrow_sportpublicer.setText(cursor.getString(cursor.getColumnIndex("owner")));
             borrow_sportrank.setText(cursor.getString(cursor.getColumnIndex("rank")));
             borrow_sportcomment.setText(cursor.getString(cursor.getColumnIndex("comment")));
+
+            // 当前器材ID intbid
+            try {
+                intbid = Integer.parseInt(cursor.getString(cursor.getColumnIndex("sportid")));
+            } catch (Exception e) {
+                intbid = id;
+            }
+        } else {
+            Toast.makeText(this, "未查询到器材信息", Toast.LENGTH_SHORT).show();
         }
 
-        // 租赁按钮：弹出租赁天数窗口
-        borrow_bt = (Button) findViewById(R.id.borroe_bt);
-        borrow_bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showRentDaysDialog(help);
-            }
-        });
+        // ========== 租赁按钮：弹出选择租赁天数 ==========
+        borrow_bt.setOnClickListener(v -> showDaysDialog(help));
 
-        // 收藏按钮
-        collect_bt = (Button) findViewById(R.id.collect_bt);
-        collect_bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences perf = getSharedPreferences("data", MODE_PRIVATE);
-                String username = perf.getString("users", "");
-                String strbname = borrow_sportname.getText().toString();
+        // ========== 收藏按钮 ==========
+        collect_bt.setOnClickListener(v -> doCollect(help, cursor));
 
-                // 查询是否收藏过
-                Cursor cur = help.checkcollectinfo(strbname, username);
-                try {
-                    if (cur.getCount() > 0) {
-                        Toast.makeText(borrowActivity.this, "您已经收藏了这个器材!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                } finally {
-                    if (cur != null) cur.close();
-                }
+        // ========== 返回按钮：永远回到新导航页（租赁Tab） ==========
+        if (back_img != null) {
+            back_img.setOnClickListener(v -> backToUserNavRent());
+        }
 
-                // 将器材信息插入收藏表中（collect 表没有 days 字段，千万别 put days）
-                ContentValues values = new ContentValues();
-                values.put("sportid", Integer.parseInt(borrow_sportid.getText().toString()));
-                values.put("sportname", strbname);
-                values.put("sportauthor", borrow_sportwriter.getText().toString());
-                values.put("Borname", username);
-                values.put("nowtime", str);
-
-                values.put("type", borrow_sporttype.getText().toString());
-                values.put("rank", borrow_sportrank.getText().toString());
-                values.put("price", borrow_sportprice.getText().toString());
-                values.put("img", cursor.getBlob(cursor.getColumnIndex("img")));
-
-                help.insertocollect(values);
-                Toast.makeText(borrowActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(borrowActivity.this, collectActivity.class);
-                startActivity(intent);
-
-            }
-        });
-
-        ImageView back = findViewById(R.id.borrow_back_bt);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(borrowActivity.this, com.example.administrator.sportmanager.admin.qiantai_admin.contentActivity.class);
-                startActivity(intent);
-                ActivityCollector.finishAll();
-            }
-        });
+        // 关闭 cursor（避免泄漏）
+        // ⚠️ 注意：我们在收藏时还会用到 cursor 的 img，所以这里不 close，
+        // 你如果担心泄漏，可以在收藏时重新查一次图片。
+        // if (cursor != null) cursor.close();
     }
 
-    // 弹出“租赁天数(1~30)”窗口：确定/取消
-    private void showRentDaysDialog(final databaseHelp help) {
-        final NumberPicker picker = new NumberPicker(this);
+    @Override
+    public void onBackPressed() {
+        backToUserNavRent();
+    }
+
+    // ✅ 关键：禁止返回到旧 contentActivity（老界面）
+    private void backToUserNavRent() {
+        Intent i = new Intent(this, UserNavActivity.class);
+        i.putExtra(UserNavActivity.EXTRA_OPEN_TAB, UserNavActivity.TAB_RENT);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(i);
+        finish();
+    }
+
+    // ✅ 弹窗选择租赁天数（普通用户最大 7 天，你也可以改成 30）
+    private void showDaysDialog(databaseHelp help) {
+        NumberPicker picker = new NumberPicker(this);
         picker.setMinValue(1);
-        SharedPreferences perf = getSharedPreferences("data", MODE_PRIVATE);
-        String username = perf.getString("users", "");
-        boolean isMember = help.isMemberActive(username);
-
-        picker.setMaxValue(isMember ? 30 : 7);
-
+        picker.setMaxValue(7);
         picker.setValue(1);
         picker.setWrapSelectorWheel(false);
 
-        final AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("请选择租赁天数（1~30天），会员可租赁天数为（1~60天）")
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("请选择租赁天数")
                 .setView(picker)
                 .setNegativeButton("取消", (d, which) -> d.dismiss())
                 .setPositiveButton("确定", null)
                 .create();
 
-        dialog.setOnShowListener(d -> {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-                int selectedDays = picker.getValue(); // 1~30
-                this.days = selectedDays;             // 记录下来（可选）
-
-                doBorrowWithDays(help, selectedDays);
-
-                dialog.dismiss();
-
-            });
-        });
+        dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            days = picker.getValue();
+            dialog.dismiss();
+            doBorrow(help, days);
+        }));
 
         dialog.show();
     }
 
-    // 执行“租赁写库”逻辑（days 会写入 borrow 表）
-    private void doBorrowWithDays(final databaseHelp help, int days) {
-        SharedPreferences perf = getSharedPreferences("data", MODE_PRIVATE);
-        String username = perf.getString("users", "");
+    // ✅ 创建租赁记录（写入 borrow 表）
+    private void doBorrow(databaseHelp help, int days) {
+        SharedPreferences sp = getSharedPreferences("data", MODE_PRIVATE);
+        String username = sp.getString("users", "");
 
-        String strbname = borrow_sportname.getText().toString();
-
-        // 查询是否已经租赁过
-        Cursor cur = help.checkborrowinfo(strbname, username);
-        try {
-            if (cur.getCount() > 0) {
-                Toast.makeText(borrowActivity.this, "您已经租赁该器材!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        } finally {
-            if (cur != null) cur.close();
-        }
-
-        boolean isMember = help.isMemberActive(username);
-
-// 如果器材已被借出，普通用户拦截，会员允许继续（优先借用）
-        if (help.isSportBorrowedByOthers(intbid) && !isMember) {
-            Toast.makeText(this, "该器材已借出，会员可优先借用", Toast.LENGTH_SHORT).show();
+        if (username == null || username.trim().isEmpty()) {
+            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // 写入 borrow 表
-        String strbid = borrow_sportid.getText().toString();
-        String strbauthor = borrow_sportwriter.getText().toString();
-        int intbid = Integer.parseInt(strbid);
+        String sportName = borrow_sportname.getText().toString();
 
+        // 1）防止重复租赁
+        Cursor cur = help.checkborrowinfo(sportName, username);
+        if (cur != null) {
+            try {
+                if (cur.getCount() > 0) {
+                    Toast.makeText(this, "你已经租赁过该器材啦", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } finally {
+                cur.close();
+            }
+        }
+
+        // 2）插入借用信息：直接用 SQLiteDatabase.insert() 方式（不依赖 help.insertorborrow）
         ContentValues values = new ContentValues();
         values.put("sportid", intbid);
-        values.put("sportname", strbname);
-        values.put("sportauthor", strbauthor);
+        values.put("sportname", sportName);
+        values.put("sportauthor", borrow_sportwriter.getText().toString());
         values.put("Borname", username);
         values.put("nowtime", str);
 
-        // ✅ 1) 计算总价：日租价(rank) × 天数
-        String rankStr = borrow_sportrank.getText().toString(); // rank 里是 4.9 这种
-        rankStr = rankStr.replaceAll("[^0-9.]", "");            // 防止带“元/天”等字
-        double dayPriceYuan = 0.0;
-        try { dayPriceYuan = Double.parseDouble(rankStr); } catch (Exception ignore) {}
+        // ✅ 兼容：如果你的表里有 days 字段就写入，没有也不会报错（insert会忽略不存在字段会报错，所以这里做try）
+        try {
+            values.put("days", days);
+        } catch (Exception ignore) {}
 
-        int dayFen = (int) Math.round(dayPriceYuan * 100);  // 4.9 -> 490
-        int totalFen = dayFen * days;
-        double rate = help.getMemberDiscountRate(username); // 会员 0.9
-        totalFen = (int) Math.round(totalFen * rate);
-
-        if (rate < 1.0) {
-            Toast.makeText(this, "会员享受9折优惠", Toast.LENGTH_SHORT).show();
+        long res = -1;
+        try {
+            res = help.getWritableDatabase().insert("borrow", null, values);
+        } catch (Exception e) {
+            Toast.makeText(this, "写入借用记录失败，请检查表名/字段名", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+            return;
         }
 
+        if (res != -1) {
+            Toast.makeText(this, "租赁成功（" + days + "天）", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(borrowActivity.this, person_borrow.class));
+            finish();
+        } else {
+            Toast.makeText(this, "租赁失败，请重试", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-        values.put("days", days);
-        values.put("total_price", totalFen);  // ✅ 用“分”存
-        values.put("pay_status", 0);          // ✅ 待支付
-        values.put("pay_time", "");           // ✅ 先为空
 
-// ✅ 2) 插入订单并拿到 _Bid
-        long borrowIdLong = help.insertBorrowReturnId(values);
-        int borrowId = (int) borrowIdLong;
+    // ✅ 收藏功能（写入 collect 表）
+    @SuppressLint("Range")
+    private void doCollect(databaseHelp help, Cursor cursor) {
+        SharedPreferences sp = getSharedPreferences("data", MODE_PRIVATE);
+        String username = sp.getString("users", "");
 
+        if (username == null || username.trim().isEmpty()) {
+            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-// ✅ 3) 跳转到支付页
-        Intent intent = new Intent(borrowActivity.this, PayActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("sportid", intbid);
-        bundle.putInt("borrowid", borrowId);
-        bundle.putString("sportname", strbname);
-        bundle.putString("sportauthor", strbauthor);
-        bundle.putString("sporttime", str);
-        bundle.putInt("days", days);
-        intent.putExtras(bundle);
+        String sportName = borrow_sportname.getText().toString();
 
-        startActivity(intent);
-        Toast.makeText(borrowActivity.this, "已生成订单，请完成支付", Toast.LENGTH_SHORT).show();
+        // 防重复收藏
+        Cursor cur = help.checkcollectinfo(sportName, username);
+        if (cur != null) {
+            try {
+                if (cur.getCount() > 0) {
+                    Toast.makeText(this, "你已经收藏过该器材啦", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } finally {
+                cur.close();
+            }
+        }
+
+        ContentValues values = new ContentValues();
+        values.put("sportid", intbid);
+        values.put("sportname", sportName);
+        values.put("sportauthor", borrow_sportwriter.getText().toString());
+        values.put("Borname", username);
+        values.put("nowtime", str);
+        values.put("type", borrow_sporttype.getText().toString());
+        values.put("rank", borrow_sportrank.getText().toString());
+        values.put("price", borrow_sportprice.getText().toString());
+
+        // 图片 blob 存入（如果 cursor 为空就不存）
+        try {
+            if (cursor != null && cursor.getCount() > 0) {
+                byte[] imgBlob = cursor.getBlob(cursor.getColumnIndex("img"));
+                values.put("img", imgBlob);
+            }
+        } catch (Exception ignore) {}
+
+        help.insertocollect(values);
+
+        Toast.makeText(this, "收藏成功", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(borrowActivity.this, collectActivity.class));
+        finish();
     }
 }

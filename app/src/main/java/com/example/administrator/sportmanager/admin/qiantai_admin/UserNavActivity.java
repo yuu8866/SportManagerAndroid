@@ -20,6 +20,12 @@ import com.google.android.material.navigation.NavigationView;
 
 public class UserNavActivity extends AppCompatActivity {
 
+    // ✅ 让其他页面能指定回到哪个 Tab
+    public static final String EXTRA_OPEN_TAB = "open_tab";
+    public static final String TAB_RENT = "rent";
+    public static final String TAB_HOME = "home";
+    public static final String TAB_COMMUNITY = "community";
+
     private BottomNavigationView bottomNav;
     private MaterialToolbar toolbar;
 
@@ -43,15 +49,15 @@ public class UserNavActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle("SportManager");
 
-        // ✅ 抽屉（左滑菜单）
+        // 抽屉（左滑菜单）
         drawerLayout = findViewById(R.id.drawerLayout);
         navView = findViewById(R.id.navView);
 
-        // ✅ 左上角“汉堡按钮”
+        // 左上角按钮
         toolbar.setNavigationIcon(android.R.drawable.ic_menu_sort_by_size);
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
-        // ✅ 抽屉头部：显示用户名/会员状态
+        // 抽屉头部：用户名/会员状态
         TextView tvUser = navView.getHeaderView(0).findViewById(R.id.tv_nav_username);
         TextView tvMember = navView.getHeaderView(0).findViewById(R.id.tv_nav_member);
         tvUser.setText("用户：" + username);
@@ -63,45 +69,31 @@ public class UserNavActivity extends AppCompatActivity {
             tvMember.setText("普通用户");
         }
 
-        // 点击抽屉菜单跳转
-        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // 抽屉菜单点击
+        navView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
 
-                int id = item.getItemId();
-
-
-                if (id == R.id.drawer_wallet) {
-                    startActivity(new Intent(UserNavActivity.this, WalletActivity.class));
-                } else if (id == R.id.drawer_collect) {
-                    startActivity(new Intent(UserNavActivity.this, collectActivity.class));
-                } else if (id == R.id.drawer_myborrow) {
-                    startActivity(new Intent(UserNavActivity.this, person_borrow.class));
-                } else if (id == R.id.drawer_member) {
-                    startActivity(new Intent(UserNavActivity.this, MemberCardActivity.class));
-                }else if (id == R.id.drawer_profile) {
-                        startActivity(new Intent(UserNavActivity.this, UserProfileAdvancedActivity.class));
-                } else if (id == R.id.drawer_exit) {
-                    // 退出：回到登录页
-                    startActivity(new Intent(UserNavActivity.this, MainActivity.class));
-                    finish();
-                }
-
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+            if (id == R.id.drawer_wallet) {
+                startActivity(new Intent(UserNavActivity.this, WalletActivity.class));
+            } else if (id == R.id.drawer_collect) {
+                startActivity(new Intent(UserNavActivity.this, collectActivity.class));
+            } else if (id == R.id.drawer_myborrow) {
+                startActivity(new Intent(UserNavActivity.this, person_borrow.class));
+            } else if (id == R.id.drawer_member) {
+                startActivity(new Intent(UserNavActivity.this, MemberCardActivity.class));
+            } else if (id == R.id.drawer_profile) {
+                startActivity(new Intent(UserNavActivity.this, UserProfileAdvancedActivity.class));
+            } else if (id == R.id.drawer_exit) {
+                startActivity(new Intent(UserNavActivity.this, MainActivity.class));
+                finish();
             }
+
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
         });
 
         // 底部导航
         bottomNav = findViewById(R.id.bottomNav);
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragmentContainer, new HomeFragment())
-                    .commit();
-            bottomNav.setSelectedItemId(R.id.nav_home);
-        }
 
         bottomNav.setOnItemSelectedListener(item -> {
 
@@ -134,11 +126,40 @@ public class UserNavActivity extends AppCompatActivity {
 
             return false;
         });
+
+        // ✅ 默认显示主页 + 支持外部指定Tab
+        if (savedInstanceState == null) {
+            bottomNav.setSelectedItemId(R.id.nav_home);
+            handleOpenTab(getIntent());
+        }
+    }
+
+    // ✅ 重点：处理外部传入 tab
+    private void handleOpenTab(Intent intent) {
+        if (intent == null || bottomNav == null) return;
+        String tab = intent.getStringExtra(EXTRA_OPEN_TAB);
+        if (tab == null) return;
+
+        if (TAB_RENT.equals(tab)) {
+            bottomNav.setSelectedItemId(R.id.nav_rent);
+        } else if (TAB_COMMUNITY.equals(tab)) {
+            bottomNav.setSelectedItemId(R.id.nav_community);
+        } else {
+            bottomNav.setSelectedItemId(R.id.nav_home);
+        }
+    }
+
+    // ✅ CLEAR_TOP 回来时会走这里，必须重新切tab，否则不生效
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleOpenTab(intent);
     }
 
     @Override
     public void onBackPressed() {
-        // 抽屉打开时返回键先关闭抽屉，更像真 App
+        // 抽屉打开时先关闭抽屉
         if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
             return;

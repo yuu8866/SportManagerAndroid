@@ -1,7 +1,6 @@
 package com.example.administrator.sportmanager.admin.qiantai_admin;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Build;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.sportmanager.R;
-import com.example.administrator.sportmanager.admin.ActivityCollector;
 import com.example.administrator.sportmanager.admin.databaseHelp;
 import com.example.administrator.sportmanager.admin.utils.PaymentDialogUtil;
 
@@ -29,7 +27,6 @@ public class PayActivity extends AppCompatActivity {
             pay_sporttype, pay_sportowner, pay_sportrank, pay_sportcomment,
             borrow_time, pay_days;
 
-    private ImageView pay_sportimg;
     private Button paysport_bt, pay_back_bt;
     private databaseHelp help;
     private int sportid, borrowid;
@@ -54,9 +51,6 @@ public class PayActivity extends AppCompatActivity {
         borrow_time = findViewById(R.id.pay_time);
         pay_days = findViewById(R.id.pay_days);
 
-        // pay_sportimg 在布局里可能没有，这里不强制 findViewById，避免空指针
-        // pay_sportimg = findViewById(R.id.pay_sportimg);
-
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
             Toast.makeText(this, "参数缺失", Toast.LENGTH_SHORT).show();
@@ -70,12 +64,10 @@ public class PayActivity extends AppCompatActivity {
 
         int days = bundle.getInt("days", 1);
         pay_days.setText(days + "天");
-        borrow_time.setText(bundle.getString("sporttime"));
         borrowid = bundle.getInt("borrowid");
 
         sportid = bundle.getInt("sportid");
         Cursor cursor = help.querysportssportid(sportid);
-        Log.i("count123", String.valueOf(cursor.getCount()));
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             pay_sportprice.setText(cursor.getString(cursor.getColumnIndex("price")));
@@ -88,7 +80,7 @@ public class PayActivity extends AppCompatActivity {
 
         Log.e("DAYS_DEBUG", "bundle days = " + days);
 
-        // ✅ 从 borrow 读取：总价(分)、支付状态、支付时间
+        // 从 borrow 读取总价/支付状态/支付时间
         int totalFen = 0;
         int payStatus = 0;
         String payTime = "";
@@ -114,25 +106,20 @@ public class PayActivity extends AppCompatActivity {
             }
         }
 
-        // ✅ 显示“应付总价”（分 -> 元，保留2位）
         pay_sportprice.setText(String.format("%.2f 元", totalFen / 100.0));
 
-        // ✅ 显示租赁时间 + 支付时间
         String rentTime = bundle.getString("sporttime", "");
         borrow_time.setText("租赁：" + rentTime + "\n支付：" + (payStatus == 1 ? payTime : "未支付"));
 
         paysport_bt = findViewById(R.id.pay_bt);
         pay_back_bt = findViewById(R.id.pay_back_bt);
 
-        // ✅ 根据状态改按钮文字
         if (payStatus == 0) {
             paysport_bt.setText("确认支付");
         } else {
             paysport_bt.setText("归还器材");
         }
 
-        // ✅ totalFen 在上面经历过 0 -> 实际值 的赋值过程，所以它不是 effectively final
-        // 为了在内部类/回调里使用，必须先拷贝成 final 变量
         final int finalTotalFen = totalFen;
         final double finalPayYuan = finalTotalFen / 100.0;
         final String finalRentTime = rentTime;
@@ -142,7 +129,6 @@ public class PayActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                // 再查一次，防止状态变化
                 int curStatus = 0;
                 Cursor c2 = help.queryBorrowById(borrowid);
                 if (c2 != null) {
@@ -157,7 +143,7 @@ public class PayActivity extends AppCompatActivity {
                 }
 
                 if (curStatus == 0) {
-                    // ✅ 未支付 → 弹出支付选择弹窗（含余额支付）
+                    // 未支付 → 弹支付弹窗
                     PaymentDialogUtil.showPayDialog(
                             PayActivity.this,
                             "选择支付方式（应付 ¥" + String.format("%.2f", finalPayYuan) + "）",
@@ -166,7 +152,6 @@ public class PayActivity extends AppCompatActivity {
                             true,
                             (channel, amount) -> {
 
-                                // 余额支付：扣余额 + 写流水
                                 if ("余额支付".equals(channel)) {
                                     SharedPreferences sp = getSharedPreferences("data", MODE_PRIVATE);
                                     String username = sp.getString("users", "");
@@ -183,7 +168,6 @@ public class PayActivity extends AppCompatActivity {
                                     help.insertWalletFlow(username, "租借扣款", -finalPayYuan, "余额支付", after, now);
                                 }
 
-                                // 标记订单已支付
                                 @SuppressLint("SimpleDateFormat")
                                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                 String now = sdf.format(new Date());
@@ -196,50 +180,22 @@ public class PayActivity extends AppCompatActivity {
                             }
                     );
                 } else {
-                    // ✅ 已支付 → 归还器材（删除订单记录）
+                    // 已支付 → 归还器材（删除订单）
                     help.delBorrowById(borrowid);
                     Toast.makeText(PayActivity.this, "归还成功", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(PayActivity.this, person_borrow.class);
-                    startActivity(intent);
-                    ActivityCollector.finishAll();
+
+                    // ✅ 归还成功后直接 finish 回上一个页面（不会跳老界面）
+                    finish();
                 }
             }
         });
 
-        pay_back_bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(PayActivity.this, person_borrow.class);
-                startActivity(intent);
-                ActivityCollector.finishAll();
-            }
-        });
+        // ✅ 返回按钮：只做 finish（回到上一个页面），不会跳到老 contentActivity
+        pay_back_bt.setOnClickListener(v -> finish());
+    }
 
-        paysport_bt.setOnLongClickListener(v -> {
-            // 只允许取消“未支付”订单
-            int curStatus = 0;
-            Cursor c = help.queryBorrowById(borrowid);
-            if (c != null) {
-                try {
-                    if (c.moveToFirst()) {
-                        int stIdx = c.getColumnIndex("pay_status");
-                        if (stIdx != -1) curStatus = c.getInt(stIdx);
-                    }
-                } finally {
-                    c.close();
-                }
-            }
-
-            if (curStatus == 0) {
-                help.delBorrowById(borrowid);
-                Toast.makeText(PayActivity.this, "已取消订单（未支付）", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(PayActivity.this, person_borrow.class));
-                ActivityCollector.finishAll();
-                return true;
-            } else {
-                Toast.makeText(PayActivity.this, "已支付订单请点击归还器材", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

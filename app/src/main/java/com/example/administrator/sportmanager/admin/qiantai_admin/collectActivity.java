@@ -15,11 +15,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
 
 import com.example.administrator.sportmanager.R;
-import com.example.administrator.sportmanager.admin.ActivityCollector;
 import com.example.administrator.sportmanager.admin.databaseHelp;
 
 import static com.example.administrator.sportmanager.admin.utils.BitmapTool.byteToBitmap;
 
+/**
+ * 收藏列表
+ *
+ * ⚠️ 你之前报错的根因：把 borrowActivity 的代码误粘贴到了 collectActivity.java
+ * 导致“public class borrowActivity 应该声明在 borrowActivity.java”这类错误。
+ *
+ * 这里是修复后的正确版本。
+ */
 public class collectActivity extends AppCompatActivity {
 
     private ListView listView;
@@ -27,7 +34,7 @@ public class collectActivity extends AppCompatActivity {
     private String username;
     private Button back;
 
-    // ✅ 用成员变量，避免“adapter 未初始化”问题
+    // 用成员变量，方便刷新列表
     private SimpleCursorAdapter collectAdapter;
 
     @Override
@@ -39,7 +46,6 @@ public class collectActivity extends AppCompatActivity {
         back = findViewById(R.id.btn_person_collect_back);
 
         help = new databaseHelp(getApplicationContext());
-
         SharedPreferences perf = getSharedPreferences("data", MODE_PRIVATE);
         username = perf.getString("users", "");
 
@@ -61,7 +67,7 @@ public class collectActivity extends AppCompatActivity {
             public void bindView(android.view.View view, Context context, Cursor cursor) {
                 super.bindView(view, context, cursor);
 
-                // 1) 显示图片（BLOB → Bitmap）
+                // 显示图片（BLOB → Bitmap）
                 ImageView img = view.findViewById(R.id.collect_sport_info_img);
                 int imgIndex = cursor.getColumnIndex("img");
                 if (imgIndex != -1) {
@@ -71,16 +77,13 @@ public class collectActivity extends AppCompatActivity {
                     }
                 }
 
-                // 2) 获取 collect 表的主键 _id（用于删除）
+                // 获取 collect 表主键 _id（用于删除）
                 int idIndex = cursor.getColumnIndex("_id");
                 final int collectId = (idIndex != -1) ? cursor.getInt(idIndex) : -1;
 
-                // 3) 右侧“取消收藏”按钮
+                // 右侧“取消收藏”按钮（你 XML 里如果还没加，会是 null，这里做保护）
                 Button btnCancel = view.findViewById(R.id.btn_cancel_collect);
-                if (btnCancel == null) {
-                    // 如果你 collect_item.xml 还没加按钮，会是 null，这里防止闪退
-                    return;
-                }
+                if (btnCancel == null) return;
 
                 btnCancel.setOnClickListener(v -> {
                     if (collectId == -1) {
@@ -94,7 +97,7 @@ public class collectActivity extends AppCompatActivity {
                             .setPositiveButton("确定", (dialog, which) -> {
                                 help.delcollect(collectId);
 
-                                // 重新查询并刷新列表
+                                // 重新查询并刷新
                                 Cursor newCursor = help.queryuser(username);
                                 collectAdapter.changeCursor(newCursor);
 
@@ -108,11 +111,21 @@ public class collectActivity extends AppCompatActivity {
 
         listView.setAdapter(collectAdapter);
 
-        back.setOnClickListener(v -> {
-            Intent intent = new Intent(collectActivity.this, contentActivity.class);
-            startActivity(intent);
-            ActivityCollector.finishAll();
-        });
+        // ✅ 返回：永远回到“新导航页”，避免回到旧 contentActivity（无底部导航）
+        back.setOnClickListener(v -> backToUserNavHome());
+    }
+
+    @Override
+    public void onBackPressed() {
+        backToUserNavHome();
+    }
+
+    private void backToUserNavHome() {
+        Intent i = new Intent(this, UserNavActivity.class);
+        i.putExtra(UserNavActivity.EXTRA_OPEN_TAB, UserNavActivity.TAB_HOME);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(i);
+        finish();
     }
 
     @Override
