@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class databaseHelp extends SQLiteOpenHelper {
     private static final String DB_NAME = "CMP.db";
-    private static final int DB_VERSION = 7;
+    private static final int DB_VERSION = 8;
 
     public databaseHelp(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -89,8 +89,10 @@ public class databaseHelp extends SQLiteOpenHelper {
                     "title text," +
                     "content text," +
                     "username text," +
-                    "create_time text" +
+                    "create_time text," +
+                    "img blob" +
                     ")";
+
 
     // ======================= v7：帖子收藏（我的收藏里展示） =======================
     private static final String CREATE_COMMUNITY_POST_COLLECT =
@@ -630,6 +632,14 @@ public class databaseHelp extends SQLiteOpenHelper {
             try { db.execSQL(CREATE_COMMUNITY_POST_COLLECT); } catch (Exception ignored) {}
         }
 
+        // v8：社区帖子图片 + 点赞评论
+        if (oldVersion < 8) {
+            try { db.execSQL("ALTER TABLE community_post ADD COLUMN img blob"); } catch (Exception ignored) {}
+            try { db.execSQL("create table IF NOT EXISTS community_post_like(_id integer primary key autoincrement, post_id integer, user text, create_time text)"); } catch (Exception ignored) {}
+            try { db.execSQL("create table IF NOT EXISTS community_post_comment(_id integer primary key autoincrement, post_id integer, user text, content text, create_time text)"); } catch (Exception ignored) {}
+        }
+
+
 
     }
 
@@ -1065,6 +1075,47 @@ public class databaseHelp extends SQLiteOpenHelper {
         }
     }
 
+    // ======================= 社区：我的收藏（封装成 List 方便 RecyclerView 使用） =======================
+
+    /** 收藏列表行（只存收藏表字段，帖子标题等可以再查 post 表） */
+    public static class PostCollectRow {
+        public long collectId;
+        public long postId;
+        public String collectTime;
+    }
+
+    /** 查询当前用户的收藏记录（按时间倒序） */
+    @android.annotation.SuppressLint("Range")
+    public java.util.List<PostCollectRow> queryPostCollectList(String user) {
+        java.util.List<PostCollectRow> out = new java.util.ArrayList<>();
+        if (user == null) user = "";
+        android.database.sqlite.SQLiteDatabase db = getReadableDatabase();
+        android.database.Cursor c = null;
+        try {
+            c = db.rawQuery(
+                    "SELECT _id, post_id, collect_time FROM community_post_collect WHERE user=? ORDER BY _id DESC",
+                    new String[]{user}
+            );
+            while (c.moveToNext()) {
+                PostCollectRow r = new PostCollectRow();
+                r.collectId = c.getLong(c.getColumnIndex("_id"));
+                r.postId = c.getLong(c.getColumnIndex("post_id"));
+                r.collectTime = c.getString(c.getColumnIndex("collect_time"));
+                out.add(r);
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return out;
+    }
+
+    /** 删除收藏记录（按收藏表主键 _id） */
+    public void deletePostCollectById(long collectId) {
+        delPostCollectByCollectId(collectId);
+    }
+
+
     /**
      * 查询“我的收藏 - 社区收藏”
      * 返回字段：_id(post_collect), post_id, title, username, create_time
@@ -1096,6 +1147,104 @@ public class databaseHelp extends SQLiteOpenHelper {
         }
     }
 
+
+    // ======================= v8：点赞 =======================
+
+    public boolean isPostLiked(String user, long postId) {
+        if (user == null) user = "";
+        Cursor c = null;
+        try {
+            c = getReadableDatabase().rawQuery(
+                    "SELECT _id FROM community_post_like WHERE user=? AND post_id=? LIMIT 1",
+                    new String[]{user, String.valueOf(postId)}
+            );
+            return c != null && c.moveToFirst();
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (c != null) c.close();
+        }
+    }
+
+    public void addPostLike(String user, long postId, String time) {
+        if (user == null) user = "";
+        try {
+            getWritableDatabase().execSQL(
+                    "INSERT INTO community_post_like(post_id,user,create_time) VALUES(?,?,?)",
+                    new Object[]{postId, user, time}
+            );
+        } catch (Exception ignored) {}
+    }
+
+    public void cancelPostLike(String user, long postId) {
+        if (user == null) user = "";
+        try {
+            getWritableDatabase().execSQL(
+                    "DELETE FROM community_post_like WHERE user=? AND post_id=?",
+                    new Object[]{user, postId}
+            );
+        } catch (Exception ignored) {}
+    }
+
+    public int queryPostLikeCount(long postId) {
+        Cursor c = null;
+        try {
+            c = getReadableDatabase().rawQuery(
+                    "SELECT COUNT(*) FROM community_post_like WHERE post_id=?",
+                    new String[]{String.valueOf(postId)}
+            );
+            if (c.moveToFirst()) return c.getInt(0);
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return 0;
+    }
+
+// ======================= v8：评论 =======================
+
+    public void addPostComment(String user, long postId, String content, String time) {
+        if (user == null) user = "";
+        try {
+            getWritableDatabase().execSQL(
+                    "INSERT INTO community_post_comment(post_id,user,content,create_time) VALUES(?,?,?,?)",
+                    new Object[]{postId, user, content, time}
+            );
+        } catch (Exception ignored) {}
+    }
+
+    public Cursor queryPostCommentCursor(long postId) {
+        try {
+            return getReadableDatabase().rawQuery(
+                    "SELECT _id as _id, user, content, create_time FROM community_post_comment WHERE post_id=? ORDER BY _id DESC",
+                    new String[]{String.valueOf(postId)}
+            );
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    public java.util.List<com.example.administrator.sportmanager.admin.bean.Post> queryCommunityPostsByUser(String user) {
+        if (user == null) user = "";
+        java.util.List<com.example.administrator.sportmanager.admin.bean.Post> list = new java.util.ArrayList<>();
+        Cursor c = null;
+        try {
+            c = getReadableDatabase().rawQuery(
+                    "SELECT _id,title,content,username,create_time FROM community_post WHERE username=? ORDER BY _id DESC",
+                    new String[]{user}
+            );
+            while (c.moveToNext()) {
+                list.add(new com.example.administrator.sportmanager.admin.bean.Post(
+                        c.getLong(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4)
+                ));
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
+    }
 
 
 

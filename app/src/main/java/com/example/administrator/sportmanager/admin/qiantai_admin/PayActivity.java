@@ -117,8 +117,9 @@ public class PayActivity extends AppCompatActivity {
         if (payStatus == 0) {
             paysport_bt.setText("确认支付");
         } else {
-            paysport_bt.setText("归还器材");
+            paysport_bt.setText("立刻归还");
         }
+
 
         final int finalTotalFen = totalFen;
         final double finalPayYuan = finalTotalFen / 100.0;

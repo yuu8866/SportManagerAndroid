@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.administrator.sportmanager.R;
 import com.example.administrator.sportmanager.admin.databaseHelp;
@@ -119,6 +120,14 @@ public class HomeFragment extends Fragment {
             b.putInt("id", (int) item.dbId - 1);
             intent.putExtras(b);
             startActivity(intent);
+            boolean memberActive = help.isMemberActive(username);
+            boolean vipOnly = (item.sportId == 6 || item.sportId == 7);
+            if (vipOnly && !memberActive) {
+                Toast.makeText(requireContext(), "该器材为热门大件，会员可优先借用，建议先开通会员", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(requireContext(), MemberCardActivity.class));
+                return;
+            }
+
         });
         rvRecommend.setAdapter(recommendAdapter);
 

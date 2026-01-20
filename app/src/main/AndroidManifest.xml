@@ -83,6 +83,12 @@
             android:name=".admin.qiantai_admin.PostPublishActivity"
             android:exported="true"/>
 
+        <activity
+            android:name=".admin.qiantai_admin.PostCollectActivity"
+            android:exported="true"/>
+
+        <activity android:name=".admin.qiantai_admin.PublicUserHomeActivity" />
+
 
     </application>
 

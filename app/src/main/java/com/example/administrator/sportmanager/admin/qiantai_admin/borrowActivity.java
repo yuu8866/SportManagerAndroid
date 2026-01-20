@@ -156,16 +156,21 @@ public class borrowActivity extends AppCompatActivity {
         finish();
     }
 
-    // ✅ 弹窗选择租赁天数（普通用户最大 7 天，你也可以改成 30）
+    // ✅ 弹窗选择租赁天数（普通最多 7 天，会员最多 30 天）
     private void showDaysDialog(databaseHelp help) {
+        SharedPreferences sp = getSharedPreferences("data", MODE_PRIVATE);
+        String username = sp.getString("users", "");
+
+        boolean isMember = help.isMemberActive(username);
+
         NumberPicker picker = new NumberPicker(this);
         picker.setMinValue(1);
-        picker.setMaxValue(7);
+        picker.setMaxValue(isMember ? 30 : 7); // ✅ 核心就在这
         picker.setValue(1);
         picker.setWrapSelectorWheel(false);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("请选择租赁天数")
+                .setTitle(isMember ? "请选择租赁天数（会员最多30天）" : "请选择租赁天数（普通最多7天）")
                 .setView(picker)
                 .setNegativeButton("取消", (d, which) -> d.dismiss())
                 .setPositiveButton("确定", null)
@@ -180,6 +185,7 @@ public class borrowActivity extends AppCompatActivity {
         dialog.show();
     }
 
+
     // ✅ 创建租赁记录（写入 borrow 表）
     private void doBorrow(databaseHelp help, int days) {
         SharedPreferences sp = getSharedPreferences("data", MODE_PRIVATE);
@@ -191,6 +197,18 @@ public class borrowActivity extends AppCompatActivity {
         }
 
         String sportName = borrow_sportname.getText().toString();
+
+        // ========= 会员优先借用：热门大件器材（示例：跑步机/动感单车）仅会员可直接借用 =========
+        boolean memberActive = help.isMemberActive(username);
+        boolean vipOnly = (intbid == 6 || intbid == 7);
+        if (vipOnly && !memberActive) {
+            Toast.makeText(this, "该器材为热门大件，会员可优先借用，请先开通会员", Toast.LENGTH_SHORT).show();
+            try {
+                Intent i = new Intent(this, MemberCardActivity.class);
+                startActivity(i);
+            } catch (Exception ignore) {}
+            return;
+        }
 
         // 1）防止重复租赁
         Cursor cur = help.checkborrowinfo(sportName, username);
@@ -205,7 +223,18 @@ public class borrowActivity extends AppCompatActivity {
             }
         }
 
-        // 2）插入借用信息：直接用 SQLiteDatabase.insert() 方式（不依赖 help.insertorborrow）
+        // 2）计算应付金额：单价 × 天数（会员 9 折）
+        double unitPrice = 0;
+        try {
+            String p = borrow_sportprice.getText().toString().replaceAll("[^0-9.]", "");
+            unitPrice = Double.parseDouble(p);
+        } catch (Exception ignored) {}
+
+        double totalYuan = unitPrice * days;
+        if (memberActive) totalYuan = totalYuan * 0.9;
+        int totalFen = (int) Math.round(totalYuan * 100);
+
+        // 3）插入 borrow（pay_status 默认 0）
         ContentValues values = new ContentValues();
         values.put("sportid", intbid);
         values.put("sportname", sportName);
@@ -213,19 +242,11 @@ public class borrowActivity extends AppCompatActivity {
         values.put("Borname", username);
         values.put("nowtime", str);
 
-        // ✅ 兼容：如果你的表里有 days 字段就写入，没有也不会报错（insert会忽略不存在字段会报错，所以这里做try）
-        try {
-            values.put("days", days);
-        } catch (Exception ignore) {}
+        values.put("days", days);
+        values.put("total_price", totalFen);
+        values.put("pay_status", 0);
 
-        long res = -1;
-        try {
-            res = help.getWritableDatabase().insert("borrow", null, values);
-        } catch (Exception e) {
-            Toast.makeText(this, "写入借用记录失败，请检查表名/字段名", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-            return;
-        }
+        long res = help.getWritableDatabase().insert("borrow", null, values);
 
         if (res != -1) {
             Toast.makeText(this, "租赁成功（" + days + "天）", Toast.LENGTH_SHORT).show();
@@ -235,6 +256,8 @@ public class borrowActivity extends AppCompatActivity {
             Toast.makeText(this, "租赁失败，请重试", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
 
     // ✅ 收藏功能（写入 collect 表）
