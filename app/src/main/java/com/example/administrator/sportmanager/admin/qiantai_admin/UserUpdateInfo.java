@@ -88,10 +88,20 @@ public class UserUpdateInfo extends AppCompatActivity {
 
             db.update("admin", values, "user=?", new String[]{String.valueOf(uname2)});
             Toast.makeText(UserUpdateInfo.this, "信息修改成功", Toast.LENGTH_LONG).show();
+
+// 修改成功
+            setResult(RESULT_OK);
+            finish();
+
         });
 
-        // ✅ 返回：永远回到“新导航页”，避免回到旧 contentActivity（无底部导航）
-        back.setOnClickListener(v -> backToUserNavHome());
+        //
+        back = findViewById(R.id.update_user_back);
+        back.setOnClickListener(v -> {
+            setResult(RESULT_CANCELED);
+            finish();
+        });
+
     }
 
     @Override

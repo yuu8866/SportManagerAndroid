@@ -3,9 +3,11 @@ package com.example.administrator.sportmanager.admin.qiantai_admin;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.administrator.sportmanager.R;
@@ -21,6 +23,7 @@ import java.util.Locale;
 import android.widget.ArrayAdapter;
 
 public class UserProfileAdvancedActivity extends AppCompatActivity {
+    private androidx.activity.result.ActivityResultLauncher<Intent> editProfileLauncher;
 
     private databaseHelp help;
     private String username;
@@ -29,6 +32,15 @@ public class UserProfileAdvancedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile_advanced);
+        editProfileLauncher = registerForActivityResult(
+                new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        //  修改成功后刷新本页数据
+                        recreate();
+                    }
+                }
+        );
 
         help = new databaseHelp(this);
         SharedPreferences sp = getSharedPreferences("data", MODE_PRIVATE);
@@ -89,6 +101,16 @@ public class UserProfileAdvancedActivity extends AppCompatActivity {
         ArrayList<String> memberLines = new ArrayList<>(help.getMemberPurchaseRecordLines(username, 5));
         if (memberLines.isEmpty()) memberLines.add("暂无会员购买记录");
         lvMember.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, memberLines));
+
+        // 编辑按钮：跳转到修改个人信息页面
+        View btnEditProfile = findViewById(R.id.btn_edit_profile);
+
+
+        btnEditProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(UserProfileAdvancedActivity.this, UserUpdateInfo.class);
+            editProfileLauncher.launch(intent);
+        });
+
     }
 
     private int calcLeftDays(String expireDate) {
