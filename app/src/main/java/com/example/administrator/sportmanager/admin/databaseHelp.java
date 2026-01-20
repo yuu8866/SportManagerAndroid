@@ -1248,6 +1248,24 @@ public class databaseHelp extends SQLiteOpenHelper {
         return list;
     }
 
+    /**
+     * 管理员端：按关键字搜索用户（user / name / phone 模糊搜索）
+     * 同时返回 member_status 字段（会员用户/普通用户）
+     */
+    public Cursor searchUsersWithMemberInfo(String keyword) {
+        SQLiteDatabase db = getReadableDatabase();
+        String like = "%" + keyword + "%";
+
+        String sql = "SELECT _id,user,password,name,sex,birthday,phone,member_expire, " +
+                "CASE WHEN member_expire IS NOT NULL AND member_expire != '' AND member_expire >= date('now') " +
+                "THEN '会员用户' ELSE '普通用户' END AS member_status " +
+                "FROM admin " +
+                "WHERE user LIKE ? OR name LIKE ? OR phone LIKE ?";
+
+        return db.rawQuery(sql, new String[]{like, like, like});
+    }
+
+
 
 
 }

@@ -223,16 +223,18 @@ public class borrowActivity extends AppCompatActivity {
             }
         }
 
-        // 2）计算应付金额：单价 × 天数（会员 9 折）
-        double unitPrice = 0;
+        // 2）计算应付金额：租金(按天) × 天数（会员 9 折）
+// ✅ price 是原价，rank 才是租金/天，所以这里必须用 borrow_sportrank
+        double rentPerDay = 0;
         try {
-            String p = borrow_sportprice.getText().toString().replaceAll("[^0-9.]", "");
-            unitPrice = Double.parseDouble(p);
+            String p = borrow_sportrank.getText().toString().replaceAll("[^0-9.]", "");
+            rentPerDay = Double.parseDouble(p);
         } catch (Exception ignored) {}
 
-        double totalYuan = unitPrice * days;
+        double totalYuan = rentPerDay * days;
         if (memberActive) totalYuan = totalYuan * 0.9;
         int totalFen = (int) Math.round(totalYuan * 100);
+
 
         // 3）插入 borrow（pay_status 默认 0）
         ContentValues values = new ContentValues();
@@ -246,11 +248,11 @@ public class borrowActivity extends AppCompatActivity {
         values.put("total_price", totalFen);
         values.put("pay_status", 0);
 
-        long res = help.getWritableDatabase().insert("borrow", null, values);
+        // ✅ 只插入一次，并拿到订单主键 _Bid
+        long borrowId = help.insertBorrowReturnId(values);
 
-        if (res != -1) {
+        if (borrowId != -1) {
             Toast.makeText(this, "租赁成功（" + days + "天）", Toast.LENGTH_SHORT).show();
-            long borrowId = help.insertBorrowReturnId(values);
 
             Intent pay = new Intent(borrowActivity.this, PayActivity.class);
             Bundle bundle = new Bundle();
@@ -264,10 +266,10 @@ public class borrowActivity extends AppCompatActivity {
 
             startActivity(pay);
             finish();
-
         } else {
             Toast.makeText(this, "租赁失败，请重试", Toast.LENGTH_SHORT).show();
         }
+
     }
 
 

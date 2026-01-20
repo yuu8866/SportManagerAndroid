@@ -1,88 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="@drawable/bg4_">
+    android:orientation="horizontal"
+    android:background="@drawable/bg_admin_card"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="8dp">
 
     <TextView
         android:id="@+id/read_user"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="用户名"
+        android:textSize="14sp"
+        android:textColor="#222222"
         android:singleLine="true"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="用户名"/>
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/read_pwd"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="密码"
+        android:textSize="14sp"
+        android:textColor="#222222"
         android:singleLine="true"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="密码"/>
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/read_name"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.1"
+        android:text="姓名"
+        android:textSize="14sp"
+        android:textColor="#222222"
         android:singleLine="true"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="姓名"/>
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/read_sex"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.9"
+        android:text="性别"
+        android:textSize="14sp"
+        android:textColor="#222222"
         android:singleLine="true"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="性别"/>
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/read_birth"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="生日"
+        android:textSize="14sp"
+        android:textColor="#222222"
         android:singleLine="true"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="生日"/>
-
-    <TextView
-        android:id="@+id/read_phone"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="2"
-        android:singleLine="true"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="手机号"/>
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/read_member_status"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="会员状态"
+        android:textSize="13sp"
+        android:textColor="#0A7DFF"
         android:singleLine="true"
-        android:textSize="16sp"
-        android:gravity="center"
-        android:text="会员状态" />
+        android:gravity="center" />
 
     <TextView
-        android:id="@+id/read_member_expire"
+        android:id="@+id/read_phone"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.6"
+        android:text="手机号"
+        android:textSize="14sp"
+        android:textColor="#222222"
         android:singleLine="true"
-        android:textSize="16sp"
-        android:gravity="center"
-        android:text="到期日" />
+        android:gravity="center" />
 
 </LinearLayout>

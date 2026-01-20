@@ -1,116 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/i4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.example.administrator.sportmanager.admin.houtai_admin.admin_delete_users">
+    android:background="#F6F7FB">
 
-    <RelativeLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/textView"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/adminUserDeleteTopBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"
-            android:background="#D77F041D"
-            android:gravity="center_horizontal"
-
-            android:text="删除用户"
-            android:textColor="@color/black"
-            android:textSize="35sp" />
-
-        <ImageButton
-            android:id="@+id/editreader_back"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignBottom="@+id/textView"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginStart="15dp"
-            android:layout_marginLeft="15dp"
-            android:background="@color/transparent"
-            app:srcCompat="@mipmap/left_arrow" />
-
-    </RelativeLayout>
+            android:background="@color/colorPrimary"
+            android:title="删除用户"
+            android:titleTextColor="@color/white"
+            app:navigationIcon="@android:drawable/ic_menu_revert"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:background="#D77F041D"
-        >
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="14dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:layout_width="0dp"
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/et_keyword"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:hint="输入用户名/姓名/手机号"
+                    android:background="@drawable/bg_admin_card"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textSize="14sp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+
+                    <Button
+                        android:id="@+id/btn_search"
+                        android:layout_width="0dp"
+                        android:layout_height="42dp"
+                        android:layout_weight="1"
+                        android:text="搜索"/>
+
+                    <Button
+                        android:id="@+id/btn_reset"
+                        android:layout_width="0dp"
+                        android:layout_height="42dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:text="重置"/>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 表头 -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:background="@color/colorPrimary">
+
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1.2" android:text="用户名"
+                    android:textColor="@color/white" android:textStyle="bold"
+                    android:gravity="center" android:singleLine="true"/>
+
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1.2" android:text="密码"
+                    android:textColor="@color/white" android:textStyle="bold"
+                    android:gravity="center" android:singleLine="true"/>
+
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1.1" android:text="姓名"
+                    android:textColor="@color/white" android:textStyle="bold"
+                    android:gravity="center" android:singleLine="true"/>
+
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="0.9" android:text="性别"
+                    android:textColor="@color/white" android:textStyle="bold"
+                    android:gravity="center" android:singleLine="true"/>
+
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1.2" android:text="生日"
+                    android:textColor="@color/white" android:textStyle="bold"
+                    android:gravity="center" android:singleLine="true"/>
+
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1.2" android:text="会员状态"
+                    android:textColor="@color/white" android:textStyle="bold"
+                    android:gravity="center" android:singleLine="true"/>
+
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1.6" android:text="手机号"
+                    android:textColor="@color/white" android:textStyle="bold"
+                    android:gravity="center" android:singleLine="true"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <ListView
+            android:id="@+id/edit_reader_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="用户名"
-            android:textSize="20sp"
-            android:textColor="@color/white"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="密码"
-            android:textSize="20sp"
-            android:textColor="@color/white"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="姓名"
-            android:textSize="20sp"
-            android:textColor="@color/white"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="性别"
-            android:textSize="20sp"
-            android:textColor="@color/white"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="生日"
-            android:textSize="20sp"
-            android:textColor="@color/white"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="手机号"
-            android:textSize="20sp"
-            android:textColor="@color/white"/>
-
+            android:layout_marginTop="10dp"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="8dp"/>
 
     </LinearLayout>
-
-    <ListView
-        android:id="@+id/edit_reader_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
