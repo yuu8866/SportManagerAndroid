@@ -1110,6 +1110,8 @@ public class databaseHelp extends SQLiteOpenHelper {
         return out;
     }
 
+
+
     /** 删除收藏记录（按收藏表主键 _id） */
     public void deletePostCollectById(long collectId) {
         delPostCollectByCollectId(collectId);

@@ -250,8 +250,21 @@ public class borrowActivity extends AppCompatActivity {
 
         if (res != -1) {
             Toast.makeText(this, "租赁成功（" + days + "天）", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(borrowActivity.this, person_borrow.class));
+            long borrowId = help.insertBorrowReturnId(values);
+
+            Intent pay = new Intent(borrowActivity.this, PayActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("sportid", intbid);
+            bundle.putInt("borrowid", (int) borrowId);
+            bundle.putString("sportname", sportName);
+            bundle.putString("sportauthor", borrow_sportwriter.getText().toString());
+            bundle.putString("sporttime", str);
+            bundle.putInt("days", days);
+            pay.putExtras(bundle);
+
+            startActivity(pay);
             finish();
+
         } else {
             Toast.makeText(this, "租赁失败，请重试", Toast.LENGTH_SHORT).show();
         }

@@ -60,14 +60,6 @@ public class CommunityFragment extends Fragment {
         });
 
 
-        // 我的收藏（帖子收藏）
-        View myCollect = root.findViewById(R.id.tv_community_my_collect);
-        myCollect.setOnClickListener(v -> {
-            Intent i = new Intent(getActivity(), PostCollectActivity.class);
-            startActivity(i);
-        });
-
-
         return root;
     }
 

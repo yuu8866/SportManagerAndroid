@@ -3,20 +3,26 @@ package com.example.administrator.sportmanager.admin.qiantai_admin;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.administrator.sportmanager.R;
 import com.example.administrator.sportmanager.admin.bean.Post;
 import com.example.administrator.sportmanager.admin.databaseHelp;
+import com.example.administrator.sportmanager.admin.utils.BitmapTool;
 
 
 import android.content.Context;
@@ -34,6 +40,8 @@ public class PostDetailActivity extends AppCompatActivity {
     private databaseHelp help;
     private String loginUser;
     private long postId;
+
+    private ImageView ivImg;
 
     private TextView tvUser, tvTitle, tvContent, tvTime;
     private Button btnCollect, btnLike;
@@ -69,6 +77,7 @@ public class PostDetailActivity extends AppCompatActivity {
         etComment = findViewById(R.id.et_comment);
         btnSendComment = findViewById(R.id.btn_send_comment);
         lvComments = findViewById(R.id.lv_comments);
+        ivImg = findViewById(R.id.iv_detail_img);
 
         Button btnBack = findViewById(R.id.btn_detail_back);
         btnBack.setOnClickListener(v -> finish());
@@ -106,6 +115,17 @@ public class PostDetailActivity extends AppCompatActivity {
         tvTitle.setText(p.getTitle());
         tvContent.setText(p.getContent());
         tvTime.setText(p.getCreateTime());
+
+        byte[] img = p.getImg();
+        if(img != null && img.length > 0){
+            Bitmap bmp = BitmapTool.byteToBitmap(img);
+            ivImg.setImageBitmap(bmp);
+            ivImg.setVisibility(View.VISIBLE);
+        }else{
+            ivImg.setVisibility(View.GONE);
+        }
+
+
     }
 
     private void refreshCollectButton() {

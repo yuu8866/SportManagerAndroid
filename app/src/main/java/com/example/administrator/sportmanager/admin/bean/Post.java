@@ -11,8 +11,21 @@ public class Post {
     private String username;
     private String createTime;
 
+    private byte[] img;
+
+
     public Post() {
     }
+
+
+    public byte[] getImg() {
+        return img;
+    }
+
+    public void setImg(byte[] img) {
+        this.img = img;
+    }
+
 
     public Post(long id, String title, String content, String username, String createTime) {
         this.id = id;
