@@ -286,14 +286,17 @@ public class HomeFragment extends Fragment {
                 int sportId = cursor.getInt(cursor.getColumnIndexOrThrow("sportid"));
                 String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
                 String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
-                String priceStr = cursor.getString(cursor.getColumnIndexOrThrow("price"));
+
+                //  真正租金：用 rank（4.4）
+                String rentStr = cursor.getString(cursor.getColumnIndexOrThrow("rank"));
                 byte[] img = cursor.getBlob(cursor.getColumnIndexOrThrow("img"));
 
-                double price = 0;
-                try { price = Double.parseDouble(priceStr); } catch (Exception ignored) {}
+                double rent = 0;
+                try { rent = Double.parseDouble(rentStr); } catch (Exception ignored) {}
 
-                list.add(new HomeRecommendAdapter.SportItem(dbId, sportId, name, type, price, img));
+                list.add(new HomeRecommendAdapter.SportItem(dbId, sportId, name, type, rent, img));
             }
+
             cursor.close();
         }
 
