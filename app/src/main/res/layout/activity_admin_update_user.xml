@@ -1,85 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:background="@drawable/i4"
-    tools:context="com.example.administrator.sportmanager.admin.registerActivity">
+    android:background="#F6F7FB">
 
-    <TextView
-        android:id="@+id/textView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/bg_button_blue_gradient"
-        android:gravity="center"
-        android:text="修改信息"
-        android:textColor="#37302F"
-        android:textSize="30sp" />
+        android:padding="16dp"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/r_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="请输入用户名" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="#1976D2"
+            android:gravity="center"
+            android:text="修改用户信息"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/r_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPassword"
-        android:hint="请输入密码"/>
+        <EditText
+            android:id="@+id/r_name"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="用户名"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
 
-    <EditText
-        android:id="@+id/user_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="姓名"/>
-    <EditText
-        android:id="@+id/r_sex"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:digits="男女"
-        android:maxLength="1"
-        android:hint="请输入性别" />
+        <EditText
+            android:id="@+id/r_password"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="密码"
+            android:inputType="textPassword"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
 
-    <EditText
-        android:id="@+id/r_birthday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="请输入生日"/>
-    <EditText
-        android:id="@+id/r_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number"
-        android:maxLength="11"
-        android:hint="请输入手机号" />
+        <EditText
+            android:id="@+id/user_name"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="姓名"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
 
+        <EditText
+            android:id="@+id/r_sex"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="性别（男/女）"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
 
-    <Button
-        android:id="@+id/r_register"
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="20dp"
-        android:text="修改"
+        <EditText
+            android:id="@+id/r_birthday"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="生日（例如：2003-01-01）"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
 
-        android:layout_alignBaseline="@+id/r_back"
-        android:layout_alignBottom="@+id/r_back"
-        android:layout_alignRight="@+id/r_password"
-        android:layout_alignEnd="@+id/r_password"
-        android:background="@drawable/bg_button_blue_gradient"
-        android:textSize="15sp"/>
-</LinearLayout>
+        <EditText
+            android:id="@+id/r_phone"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="手机号（11位）"
+            android:inputType="number"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
+
+        <Button
+            android:id="@+id/r_register"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="18dp"
+            android:background="#1976D2"
+            android:text="确认修改"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+</ScrollView>

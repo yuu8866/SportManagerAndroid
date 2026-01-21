@@ -89,6 +89,8 @@
 
         <activity android:name=".admin.qiantai_admin.PublicUserHomeActivity" />
 
+        <activity android:name=".admin.houtai_admin.admin_manage_posts" />
+
 
     </application>
 

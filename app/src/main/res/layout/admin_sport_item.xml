@@ -1,68 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:orientation="horizontal"
+    android:background="@android:color/white"
+    android:gravity="center_vertical"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
+
     <ImageView
         android:id="@+id/admin_sport_info_img"
-        android:layout_weight="1"
-        android:layout_width="20dp"
-        android:layout_height="150dp"/>
-    <TextView
-        android:layout_width="1dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:singleLine="true"
-        android:textSize="100sp"
-        android:gravity="center_horizontal"
-        android:text="运动器械名"
-        android:id="@+id/admin_Sport_Name"/>
-    <TextView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:singleLine="true"
-        android:textSize="15sp"
-        android:gravity="center_horizontal"
-        android:text="作者"
-        android:id="@+id/admin_sport_author"/>
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:singleLine="true"
-        android:textSize="15sp"
-        android:gravity="center_horizontal"
-        android:text="类型"
-        android:id="@+id/admin_Sport_Type"/>
+        android:layout_height="52dp"
+        android:layout_weight="1.0"
+        android:scaleType="centerCrop" />
 
     <TextView
+        android:id="@+id/admin_Sport_Name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="1.4"
+        android:gravity="center"
         android:singleLine="true"
-        android:textSize="15sp"
-        android:gravity="center_horizontal"
-        android:text="价格"
-        android:id="@+id/admin_sport_pice"/>
+        android:textSize="13sp"
+        android:textColor="#333333"
+        android:layout_marginStart="6dp" />
 
     <TextView
+        android:id="@+id/admin_sport_author"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="1.2"
+        android:gravity="center"
         android:singleLine="true"
-        android:textSize="15sp"
-        android:gravity="center_horizontal"
-        android:text="评分"
-        android:id="@+id/admin_Sport_Rank"/>
+        android:textSize="13sp"
+        android:textColor="#333333" />
 
     <TextView
+        android:id="@+id/admin_Sport_Type"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:singleLine="false"
-        android:textSize="15sp"
-        android:gravity="center_horizontal"
-        android:text="出版社"
-        android:id="@+id/admin_sport_publish"/>
+        android:layout_weight="1.0"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textSize="13sp"
+        android:textColor="#333333" />
+
+    <TextView
+        android:id="@+id/admin_sport_pice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textSize="13sp"
+        android:textColor="#333333" />
+
+    <TextView
+        android:id="@+id/admin_Sport_Rank"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.9"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textSize="13sp"
+        android:textColor="#333333" />
+
+    <TextView
+        android:id="@+id/admin_sport_publish"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.1"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textSize="13sp"
+        android:textColor="#333333" />
 
 </LinearLayout>

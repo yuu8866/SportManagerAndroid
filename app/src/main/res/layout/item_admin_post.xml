@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/post_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="标题"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="#222222" />
+
+    <TextView
+        android:id="@+id/post_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="发布者：xxx"
+        android:textSize="12sp"
+        android:textColor="#666666"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:id="@+id/post_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="时间：yyyy-MM-dd"
+        android:textSize="12sp"
+        android:textColor="#666666"/>
+
+    <TextView
+        android:id="@+id/post_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="内容"
+        android:textSize="14sp"
+        android:textColor="#333333"
+        android:layout_marginTop="6dp"
+        android:maxLines="3"
+        android:ellipsize="end"/>
+
+    <TextView
+        android:id="@+id/post_warn_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="状态：正常"
+        android:textSize="13sp"
+        android:textColor="#E53935"
+        android:layout_marginTop="6dp" />
+
+    <TextView
+        android:id="@+id/post_warn_reason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="原因：xxx"
+        android:textSize="13sp"
+        android:textColor="#E53935"
+        android:layout_marginTop="2dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/btn_post_warn"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@color/colorPrimary"
+            android:text="警告"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btn_post_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:background="#B0BEC5"
+            android:text="删除"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+</LinearLayout>

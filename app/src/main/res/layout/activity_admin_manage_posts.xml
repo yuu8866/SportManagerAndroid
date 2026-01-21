@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F6F7FB"
+    android:orientation="vertical">
+
+    <!-- 顶部栏 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/colorPrimary"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp">
+
+        <ImageButton
+            android:id="@+id/post_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:src="@mipmap/left_arrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="社区帖子管理"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <!-- 搜索区 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/et_post_search"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_input_round"
+            android:hint="搜索 标题/内容/发布者"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_post_search"
+            android:layout_width="80dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_button_blue_gradient"
+            android:text="搜索"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_post_reset"
+            android:layout_width="80dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_button_gray"
+            android:text="重置"
+            android:textColor="#333333"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/post_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10dp"
+        android:padding="12dp" />
+
+</LinearLayout>

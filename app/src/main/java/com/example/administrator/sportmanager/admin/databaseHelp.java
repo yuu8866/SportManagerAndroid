@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class databaseHelp extends SQLiteOpenHelper {
     private static final String DB_NAME = "CMP.db";
-    private static final int DB_VERSION = 8;
+    private static final int DB_VERSION = 9;
 
     public databaseHelp(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -82,7 +82,7 @@ public class databaseHelp extends SQLiteOpenHelper {
                     "balance_after real," +
                     "create_time text)";
 
-    // ======================= v7：社区帖子 =======================
+    // ======================= v7：社区帖子 ====================
     private static final String CREATE_COMMUNITY_POST =
             "create table community_post(" +
                     "_id integer primary key autoincrement," +
@@ -90,7 +90,10 @@ public class databaseHelp extends SQLiteOpenHelper {
                     "content text," +
                     "username text," +
                     "create_time text," +
-                    "img blob" +
+                    "img blob," +
+                    "warned integer DEFAULT 0," +
+                    "warn_reason text," +
+                    "warn_time text" +
                     ")";
 
 
@@ -638,6 +641,14 @@ public class databaseHelp extends SQLiteOpenHelper {
             try { db.execSQL("create table IF NOT EXISTS community_post_like(_id integer primary key autoincrement, post_id integer, user text, create_time text)"); } catch (Exception ignored) {}
             try { db.execSQL("create table IF NOT EXISTS community_post_comment(_id integer primary key autoincrement, post_id integer, user text, content text, create_time text)"); } catch (Exception ignored) {}
         }
+
+        // v9：帖子警告（管理员端）
+        if (oldVersion < 9) {
+            try { db.execSQL("ALTER TABLE community_post ADD COLUMN warned integer DEFAULT 0"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE community_post ADD COLUMN warn_reason text"); } catch (Exception ignored) {}
+            try { db.execSQL("ALTER TABLE community_post ADD COLUMN warn_time text"); } catch (Exception ignored) {}
+        }
+
 
 
 
@@ -1263,6 +1274,53 @@ public class databaseHelp extends SQLiteOpenHelper {
                 "WHERE user LIKE ? OR name LIKE ? OR phone LIKE ?";
 
         return db.rawQuery(sql, new String[]{like, like, like});
+    }
+
+    // ======================= v9：管理员端 - 社区帖子管理 =======================
+
+    /**
+     * 管理员端：查询帖子（支持关键字：标题/内容/发布者）
+     * 返回字段：_id,title,content,username,create_time,warned,warn_reason,warn_time
+     */
+    public Cursor queryCommunityPostsForAdmin(String keyword) {
+        SQLiteDatabase db = getReadableDatabase();
+        String baseSql = "SELECT _id,title,content,username,create_time, " +
+                "IFNULL(warned,0) AS warned, IFNULL(warn_reason,'') AS warn_reason, IFNULL(warn_time,'') AS warn_time " +
+                "FROM community_post";
+
+        if (keyword == null) keyword = "";
+        keyword = keyword.trim();
+        if (keyword.isEmpty()) {
+            return db.rawQuery(baseSql + " ORDER BY _id DESC", null);
+        }
+
+        String like = "%" + keyword + "%";
+        return db.rawQuery(
+                baseSql + " WHERE title LIKE ? OR content LIKE ? OR username LIKE ? ORDER BY _id DESC",
+                new String[]{like, like, like}
+        );
+    }
+
+    /** 警告帖子：设置 warned=1，记录原因与时间 */
+    public void warnCommunityPost(long postId, String reason, String warnTime) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("warned", 1);
+        cv.put("warn_reason", reason == null ? "" : reason);
+        cv.put("warn_time", warnTime == null ? "" : warnTime);
+        db.update("community_post", cv, "_id=?", new String[]{String.valueOf(postId)});
+    }
+
+    /**
+     * 删除帖子（同时清理：收藏/点赞/评论）
+     * 说明：目前业务上删除=物理删除
+     */
+    public void deleteCommunityPost(long postId) {
+        SQLiteDatabase db = getWritableDatabase();
+        try { db.execSQL("DELETE FROM community_post_collect WHERE post_id=?", new Object[]{postId}); } catch (Exception ignored) {}
+        try { db.execSQL("DELETE FROM community_post_like WHERE post_id=?", new Object[]{postId}); } catch (Exception ignored) {}
+        try { db.execSQL("DELETE FROM community_post_comment WHERE post_id=?", new Object[]{postId}); } catch (Exception ignored) {}
+        try { db.execSQL("DELETE FROM community_post WHERE _id=?", new Object[]{postId}); } catch (Exception ignored) {}
     }
 
 
