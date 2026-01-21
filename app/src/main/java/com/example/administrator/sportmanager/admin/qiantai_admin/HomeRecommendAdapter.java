@@ -25,7 +25,7 @@ public class HomeRecommendAdapter extends RecyclerView.Adapter<HomeRecommendAdap
         public int sportId;    // sports 表 sportid
         public String name;
         public String type;
-        public double price;
+        public double price;   // ✅这里就是租价/天
         public byte[] img;
 
         public SportItem(long dbId, int sportId, String name, String type, double price, byte[] img) {
@@ -80,7 +80,8 @@ public class HomeRecommendAdapter extends RecyclerView.Adapter<HomeRecommendAdap
         h.tvName.setText(it.name);
         h.tvType.setText(it.type);
 
-        h.tvPrice.setText("原价：¥" + String.format(Locale.CHINA, "%.2f", it.price) + "/天");
+        // ✅这里改成“租价”
+        h.tvPrice.setText("租价：¥" + String.format(Locale.CHINA, "%.2f", it.price) + "/天");
 
         if (isMember) {
             double mp = it.price * 0.9;
